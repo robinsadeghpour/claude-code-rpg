@@ -1,0 +1,131 @@
+import { config } from "@onecontext/config";
+import { db } from "@onecontext/database/server";
+import { logger } from "@onecontext/logs";
+import { sendMagicLinkEmail } from "@onecontext/mail";
+import { getBaseUrl } from "@onecontext/utils";
+import { betterAuth } from "better-auth";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import {
+	admin,
+	apiKey,
+	magicLink,
+	openAPI,
+	username,
+} from "better-auth/plugins";
+
+const appUrl = getBaseUrl();
+
+// Build trusted origins list - only include the base app URL
+const trustedOrigins = [appUrl];
+
+// Update this pattern to match your Vercel preview deployment URLs
+const VERCEL_PREVIEW_PATTERN = /^myapp-.+\.vercel\.app$/i;
+
+function isAllowedVercelPreviewHost(hostname: string): boolean {
+	return VERCEL_PREVIEW_PATTERN.test(hostname);
+}
+
+export const auth = betterAuth({
+	baseURL: appUrl,
+	trustedOrigins: async (request) => {
+		const dynamic: string[] = [...trustedOrigins];
+
+		// Allow request origin only if it matches allowed vercel preview hosts
+		const origin = request?.headers?.get("origin");
+
+		if (origin) {
+			try {
+				const url = new URL(origin);
+				if (isAllowedVercelPreviewHost(url.hostname)) {
+					dynamic.push(`${url.protocol}//${url.host}`);
+				}
+			} catch {
+				// ignore malformed origin
+			}
+		}
+
+		const finalOrigins = Array.from(new Set(dynamic));
+		return finalOrigins;
+	},
+	database: prismaAdapter(db, {
+		provider: "postgresql",
+	}),
+	session: {
+		expiresIn: config.auth.sessionCookieMaxAge,
+	},
+	account: {
+		accountLinking: {
+			enabled: true,
+			trustedProviders: ["github", "twitter"],
+		},
+	},
+	user: {
+		additionalFields: {
+			onboardingComplete: {
+				type: "boolean",
+				required: false,
+			},
+		},
+		deleteUser: {
+			enabled: true,
+		},
+		changeEmail: {
+			enabled: true,
+		},
+	},
+	emailAndPassword: {
+		enabled: config.auth.enablePasswordLogin,
+		autoSignIn: true,
+	},
+	socialProviders: {
+		...(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET
+			? {
+					github: {
+						clientId: process.env.GITHUB_CLIENT_ID,
+						clientSecret: process.env.GITHUB_CLIENT_SECRET,
+						scope: ["user:email", "read:user"],
+					},
+				}
+			: {}),
+		...(process.env.TWITTER_CLIENT_ID && process.env.TWITTER_CLIENT_SECRET
+			? {
+					twitter: {
+						clientId: process.env.TWITTER_CLIENT_ID,
+						clientSecret: process.env.TWITTER_CLIENT_SECRET,
+						scope: ["users.read", "tweet.read", "offline.access"],
+					},
+				}
+			: {}),
+	},
+	plugins: [
+		username(),
+		admin(),
+		openAPI(),
+		apiKey({
+			defaultPrefix: config.api.apiKeyPrefix,
+			enableMetadata: true,
+			rateLimit: {
+				enabled: true,
+				timeWindow: 60000,
+				maxRequests: config.api.rateLimitPerMinute,
+			},
+		}),
+		magicLink({
+			sendMagicLink: async ({ email, url }) => {
+				logger.info("Magic link requested", { email });
+				await sendMagicLinkEmail({
+					to: email,
+					url,
+					from: config.mail.from,
+				});
+			},
+		}),
+	],
+	onAPIError: {
+		onError(error, ctx) {
+			logger.error(error, { ctx });
+		},
+	},
+});
+
+export type Session = typeof auth.$Infer.Session;
