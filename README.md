@@ -12,6 +12,7 @@ Production-ready Next.js monorepo starter. Auth, billing, database, email, and s
 - **Billing:** Stripe (checkout, portal, webhooks)
 - **Mail:** Nodemailer + Resend + react-email
 - **Storage:** S3-compatible (presigned URLs)
+- **AI Chat:** Vercel AI SDK + assistant-ui (Claude, web search, memory)
 - **Linting:** Biome
 - **Styling:** Tailwind CSS + ShadCN
 
@@ -24,6 +25,9 @@ packages/auth     — BetterAuth config
 packages/database — Prisma schema + queries
 packages/stripe   — Stripe billing
 packages/mail     — Email templates
+packages/ai       — AI model config (Claude via AI SDK gateway)
+packages/ai-chat  — Chat orchestrator, tools, title generation
+packages/memory   — Mem0 integration (optional)
 packages/storage  — S3 client
 packages/logs     — Logger (Consola)
 packages/utils    — Utilities
@@ -48,6 +52,23 @@ pnpm lint       # Biome check
 pnpm lint:fix   # Biome fix
 pnpm format     # Biome format
 ```
+
+## AI Chat (Optional)
+
+The `/chat` page provides a streaming AI chat with persistent history. All features are opt-in based on environment variables:
+
+| Feature | Env var | Description |
+|---------|---------|-------------|
+| Chat (required) | `AI_GATEWAY_API_KEY` | AI SDK gateway key for Claude models |
+| Web search | `TAVILY_API_KEY` | Enables the web search tool |
+| Memory | `MEM0_API_KEY` | Enables memory storage/search tools |
+
+Without any keys, the chat page renders but won't function. With just `AI_GATEWAY_API_KEY`, you get plain chat. Add the other keys to progressively enable tools.
+
+The chat uses:
+- **Backend:** `packages/ai-chat` orchestrator with `streamText()`, auto-generated titles
+- **Frontend:** `@assistant-ui/react` components at `apps/web/modules/ui/components/assistant-ui/`
+- **Database:** `Chat` and `ChatMessage` models in Prisma
 
 ## Customizing
 

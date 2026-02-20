@@ -23,6 +23,14 @@ export async function findApiUsageForDate(userId: string, date: Date) {
 	});
 }
 
+export async function upsertApiUsage(userId: string, date: Date) {
+	return db.apiUsage.upsert({
+		where: { userId_date: { userId, date } },
+		create: { userId, date, callCount: 1 },
+		update: { callCount: { increment: 1 } },
+	});
+}
+
 export async function countConnectedSources(
 	userId: string,
 	providers: string[],

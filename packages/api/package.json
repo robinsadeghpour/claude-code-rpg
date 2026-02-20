@@ -7,7 +7,6 @@
 		"@onecontext/auth": "workspace:*",
 		"@onecontext/config": "workspace:*",
 		"@onecontext/database": "workspace:*",
-		"@onecontext/integrations": "workspace:*",
 		"@onecontext/logs": "workspace:*",
 		"@onecontext/memory": "workspace:*",
 		"@onecontext/stripe": "workspace:*",

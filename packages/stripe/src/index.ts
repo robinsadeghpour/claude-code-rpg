@@ -1,14 +1,16 @@
 import Stripe from "stripe";
 
 if (!process.env.STRIPE_SECRET_KEY) {
-	throw new Error(
-		"[Stripe] STRIPE_SECRET_KEY is not set. Cannot initialize Stripe client.",
+	console.warn(
+		"[Stripe] STRIPE_SECRET_KEY is not set. Stripe features will be unavailable.",
 	);
 }
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-	apiVersion: "2025-02-24.acacia",
-	typescript: true,
-});
+export const stripe = process.env.STRIPE_SECRET_KEY
+	? new Stripe(process.env.STRIPE_SECRET_KEY, {
+			apiVersion: "2025-02-24.acacia",
+			typescript: true,
+		})
+	: (undefined as unknown as Stripe);
 
 export { Stripe };

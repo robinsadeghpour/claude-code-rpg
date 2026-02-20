@@ -1,15 +1,11 @@
 import { config } from "@onecontext/config";
 import {
-	countConnectedSources,
 	findActiveSubscription,
 	findApiUsageForDate,
 	findUserPlan,
 	findUserStripeCustomerId,
 	updateSubscription,
 } from "@onecontext/database/queries";
-import { list } from "@onecontext/integrations";
-import { logger } from "@onecontext/logs";
-import { getAll } from "@onecontext/memory";
 import { stripe } from "@onecontext/stripe";
 import { getPlanLimits } from "../middleware/plan-limits";
 
@@ -30,20 +26,7 @@ export async function getSubscriptionInfo(userId: string) {
 	const today = new Date();
 	today.setHours(0, 0, 0, 0);
 
-	const [sourceCount, apiUsage, memories] = await Promise.all([
-		countConnectedSources(
-			userId,
-			list().map((a) => a.provider),
-		),
-		findApiUsageForDate(userId, today),
-		getAll(userId).catch((err) => {
-			logger.warn("Failed to fetch memories for billing info", {
-				userId,
-				error: err,
-			});
-			return [];
-		}),
-	]);
+	const apiUsage = await findApiUsageForDate(userId, today);
 
 	return {
 		plan: planConfig?.name ?? "Free",
@@ -58,8 +41,6 @@ export async function getSubscriptionInfo(userId: string) {
 				}
 			: null,
 		usage: {
-			sources: sourceCount,
-			memories: Array.isArray(memories) ? memories.length : 0,
 			apiCallsToday: apiUsage?.callCount ?? 0,
 		},
 		limits,

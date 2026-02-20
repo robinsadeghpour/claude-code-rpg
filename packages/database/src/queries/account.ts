@@ -6,9 +6,3 @@ export async function findUserChatsWithMessages(userId: string) {
 		include: { messages: true },
 	});
 }
-
-export async function findUserContentItems(userId: string) {
-	return db.contentItem.findMany({
-		where: { source: { userId } },
-	});
-}

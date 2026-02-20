@@ -5,6 +5,7 @@ import { Hono } from "hono";
 import { openAPIRouteHandler } from "hono-openapi";
 import { corsMiddleware } from "./middleware/cors";
 import { loggerMiddleware } from "./middleware/logger";
+import { aiRouter } from "./routes/ai";
 import { authRouter } from "./routes/auth";
 import { billingRouter } from "./routes/billing";
 import { dashboardRouter } from "./routes/dashboard";
@@ -19,6 +20,7 @@ app.use(corsMiddleware);
 const appRouter = app
 	.route("/", healthRouter)
 	.route("/", authRouter)
+	.route("/", aiRouter)
 	.route("/", dashboardRouter)
 	.route("/", settingsRouter)
 	.route("/", billingRouter);

@@ -15,12 +15,18 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@ui/components/sidebar";
-import { LayoutDashboard, Settings, Sparkles } from "lucide-react";
+import {
+	LayoutDashboard,
+	MessageSquare,
+	Settings,
+	Sparkles,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
 	{ title: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+	{ title: "Chat", href: "/chat", icon: MessageSquare },
 	{ title: "Settings", href: "/settings", icon: Settings },
 ];
 

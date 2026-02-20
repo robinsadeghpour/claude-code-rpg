@@ -1,13 +1,9 @@
 import {
 	deleteUser,
-	findSourcesByUserId,
 	findUserChatsWithMessages,
-	findUserContentItems,
 	findUserForExport,
 	updateUser,
 } from "@onecontext/database/queries";
-import { logger } from "@onecontext/logs";
-import * as mem0 from "@onecontext/memory";
 
 export async function updateProfile(
 	userId: string,
@@ -36,30 +32,18 @@ export async function updateSyncSettings(userId: string, syncEnabled: boolean) {
 }
 
 export async function exportUserData(userId: string) {
-	const [profile, chats, sources, contentItems, memories] = await Promise.all([
+	const [profile, chats] = await Promise.all([
 		findUserForExport(userId),
 		findUserChatsWithMessages(userId),
-		findSourcesByUserId(userId),
-		findUserContentItems(userId),
-		mem0.getAll(userId),
 	]);
 
 	return {
 		exportedAt: new Date().toISOString(),
 		profile,
 		chats,
-		sources,
-		contentItems,
-		memories,
 	};
 }
 
 export async function deleteAccount(userId: string) {
-	try {
-		await mem0.deleteAll(userId);
-	} catch (err) {
-		logger.warn("Failed to delete Mem0 memories", { userId, error: err });
-	}
-
 	await deleteUser(userId);
 }
