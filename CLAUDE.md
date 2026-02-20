@@ -13,10 +13,10 @@ Turborepo + pnpm workspaces.
 - **apps/web** — Next.js 16 app (App Router, Turbopack dev, React 19)
 - **packages/api** — Hono API server, mounted at `/api/*` via Next.js catch-all route
 - **packages/auth** — BetterAuth config (GitHub + Twitter OAuth, email/password, magic link, API keys)
-- **packages/database** — Prisma 7 with PostgreSQL, singleton client, `@prisma/adapter-pg`
+- **packages/database** — Prisma 7 with Supabase (PostgreSQL), singleton client, `@prisma/adapter-pg`
 - **packages/stripe** — Stripe checkout, portal, webhooks
 - **packages/storage** — S3-compatible storage client (presigned URLs)
-- **packages/mail** — Nodemailer + react-email templates (preview on port 3005)
+- **packages/mail** — Resend + react-email templates (preview on port 3005)
 - **packages/logs** — Consola logger wrapper
 - **packages/utils** — `getBaseUrl()` helper
 - **config/** — Centralized app config (auth, ui, api settings)

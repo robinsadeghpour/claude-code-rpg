@@ -8,9 +8,9 @@ Production-ready Next.js monorepo starter. Auth, billing, database, email, and s
 - **Monorepo:** Turborepo + pnpm workspaces
 - **API:** Hono (mounted via Next.js catch-all route)
 - **Auth:** BetterAuth (email/password, magic link, OAuth, API keys)
-- **Database:** PostgreSQL via Prisma 7
+- **Database:** Supabase (PostgreSQL) via Prisma 7
 - **Billing:** Stripe (checkout, portal, webhooks)
-- **Mail:** Nodemailer + Resend + react-email
+- **Mail:** Resend + react-email
 - **Storage:** S3-compatible (presigned URLs)
 - **AI Chat:** Vercel AI SDK + assistant-ui (Claude, web search, memory)
 - **Linting:** Biome
@@ -39,9 +39,10 @@ tooling/          — Shared TypeScript + Tailwind configs
 
 1. Clone this repo
 2. `cp .env.example .env.local` and fill in values
-3. `pnpm install`
-4. `cd packages/database && pnpm migrate && pnpm generate`
-5. `pnpm dev`
+3. Create a [Supabase](https://supabase.com) project and copy the connection string into `DATABASE_URL` (use the "Transaction" pooler URL for the app, and the "Session" pooler URL for `MIGRATION_DATABASE_URL`)
+4. `pnpm install`
+5. `cd packages/database && pnpm migrate && pnpm generate`
+6. `pnpm dev`
 
 ## Common Commands
 
