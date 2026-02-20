@@ -73,9 +73,11 @@ The chat uses:
 
 ## Customizing
 
-1. **App name:** Find/replace `My App` and `myapp` with your product name
-2. **API key prefix:** Update `apiKeyPrefix` in `config/index.ts`
-3. **Pricing:** Update `config/index.ts` payments section
-4. **Nav:** Edit `apps/web/modules/shared/components/app-sidebar.tsx`
-5. **Schema:** Add your models to `packages/database/prisma/schema.prisma`, then run `pnpm migrate && pnpm generate` in `packages/database`
-6. **Vercel preview pattern:** Update `VERCEL_PREVIEW_PATTERN` in `packages/auth/auth.ts`
+1. **Brand & naming:** Find/replace `OneContext`/`onecontext`/`My App`/`myapp` across the codebase with your product name. Key files: `config/index.ts`, `package.json` (root + all workspaces), email templates in `packages/mail/`, and `apps/web/app/layout.tsx`
+2. **CLAUDE.md:** Update the project overview and any references to match your product. This file guides Claude Code — keeping it accurate saves time
+3. **Skills:** Review `.claude/skills/` and update any product-specific instructions (e.g., `coding-style/SKILL.md`)
+4. **API key prefix:** Update `apiKeyPrefix` in `config/index.ts`
+5. **Pricing:** Update `config/index.ts` payments section
+6. **Nav:** Edit `apps/web/modules/shared/components/app-sidebar.tsx`
+7. **Schema:** Add your models to `packages/database/prisma/schema.prisma`, then run `pnpm migrate && pnpm generate` in `packages/database`
+8. **Vercel preview pattern:** Update `VERCEL_PREVIEW_PATTERN` in `packages/auth/auth.ts`
