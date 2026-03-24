@@ -15,7 +15,7 @@
 		"@standard-community/standard-json": "^0.3.5",
 		"@standard-community/standard-openapi": "^0.2.9",
 		"@standard-schema/spec": "^1.1.0",
-		"hono": "^4.11.7",
+		"hono": "^4.12.9",
 		"hono-openapi": "^1.1.2",
 		"zod": "^4.2.1"
 	},
