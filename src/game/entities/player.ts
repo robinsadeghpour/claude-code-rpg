@@ -5,6 +5,8 @@ const PLAYER_H = 24;
 const SPEED = 120;
 
 export function spawnPlayer(k: KAPLAYCtx, x: number, y: number) {
+  let interacting = false;
+
   const player = k.add([
     k.rect(PLAYER_W, PLAYER_H),
     k.pos(x, y),
@@ -14,16 +16,10 @@ export function spawnPlayer(k: KAPLAYCtx, x: number, y: number) {
     k.color(k.Color.fromHex("#4A7FBF")),
     k.z(5),
     "player",
-    {
-      interacting: false,
-      setInteracting(val: boolean) {
-        this.interacting = val;
-      },
-    },
   ]);
 
   player.onUpdate(() => {
-    if (player.interacting) return;
+    if (interacting) return;
 
     let dx = 0;
     let dy = 0;
@@ -36,5 +32,10 @@ export function spawnPlayer(k: KAPLAYCtx, x: number, y: number) {
     player.move(dx * SPEED, dy * SPEED);
   });
 
-  return player;
+  return {
+    obj: player,
+    setInteracting(val: boolean) {
+      interacting = val;
+    },
+  };
 }
