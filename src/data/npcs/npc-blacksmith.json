@@ -1,0 +1,36 @@
+{
+  "id": "blacksmith",
+  "name": "Harlan",
+  "role": "Village Blacksmith",
+  "area": "village-square",
+  "position": { "x": 180, "y": 280 },
+  "state": "glitched",
+  "catchphrase": "The iron remembers, even when I don't.",
+  "personality": {
+    "trait": "Patient, methodical, frustrated by sudden incompetence",
+    "speechPattern": "Measured sentences with mid-thought pauses",
+    "quirk": "Taps hammer rhythmically but skips a beat"
+  },
+  "dialogue": {
+    "glitched": [
+      { "speaker": "Harlan", "text": "I'd offer you something freshly forged, but..." },
+      { "speaker": "Harlan", "text": "My hands know the motions. Heat, fold, strike." },
+      { "speaker": "Harlan", "text": "But I keep skipping the first part. The preparation." },
+      { "speaker": "Harlan", "text": "It's like that step just vanished from my mind." }
+    ],
+    "questGiving": [
+      { "speaker": "Harlan", "text": "You seem like someone who notices things others miss." },
+      { "speaker": "Harlan", "text": "My work used to flow — preparation, then the craft." },
+      { "speaker": "Harlan", "text": "Now the preparation vanishes. Like it was never there." },
+      { "speaker": "Harlan", "text": "Could you look at the forge? Something in the sequence broke." }
+    ],
+    "healed": [
+      { "speaker": "Harlan", "text": "I can feel it. The rhythm — it's back." },
+      { "speaker": "Harlan", "text": "Prepare, then forge. How did I ever forget that?" },
+      { "speaker": "Harlan", "text": "Thank you, friend. My hands remember again." }
+    ]
+  },
+  "sprite": { "idle": "sprite-blacksmith-idle", "glitched": "sprite-blacksmith-glitched", "healed": "sprite-blacksmith-healed" },
+  "questId": "forgotten-prep",
+  "_creatorNote": "Teaches hooks (pre-command hooks)."
+}
