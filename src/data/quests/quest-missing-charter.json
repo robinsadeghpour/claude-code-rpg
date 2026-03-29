@@ -1,0 +1,22 @@
+{
+  "id": "missing-charter",
+  "title": "The Missing Charter",
+  "npcId": "mayor",
+  "areaId": "village-square",
+  "state": "available",
+  "description": "Mayor Bramble's village charter is completely blank. Without it, nobody knows the rules.",
+  "checkId": "charter-restored",
+  "trigger": { "type": "npc-dialogue", "condition": "Talk to Mayor Bramble" },
+  "healMoment": {
+    "duration": 2500,
+    "visual": "Town hall windows glow warm gold. Color ripples outward across the square.",
+    "audio": "A deep hum resolves into a warm chord. Three-note ascending chime plays.",
+    "npcReaction": [
+      { "speaker": "Bramble", "text": "I can read it again! Every word, clear as day." },
+      { "speaker": "Bramble", "text": "Welcome to Bughollow! That's our name!" }
+    ],
+    "worldChange": "Town hall restored. Village signpost readable."
+  },
+  "rewards": { "unlocksArea": "forge", "worldChange": "Village square fully restored." },
+  "_creatorNote": { "concept": "CLAUDE.md", "lesson": "The foundational project document.", "realWorldParallel": "CLAUDE.md provides project context to Claude Code." }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "forgotten-prep",
+  "title": "The Forgotten Preparation",
+  "npcId": "blacksmith",
+  "areaId": "village-square",
+  "state": "locked",
+  "description": "Harlan can't forge — the preparation step keeps vanishing from his routine.",
+  "checkId": "forge-prep-restored",
+  "trigger": { "type": "npc-dialogue", "condition": "Talk to Harlan after quest 1" },
+  "healMoment": {
+    "duration": 2000,
+    "visual": "Harlan's anvil stops flickering. Warm orange and gold ripple across the forge.",
+    "audio": "Forge crackling normalizes. Three-note ascending chime plays.",
+    "npcReaction": [
+      { "speaker": "Harlan", "text": "I can feel it. The rhythm — it's back." },
+      { "speaker": "Harlan", "text": "Prepare, then forge. How did I ever forget?" }
+    ],
+    "worldChange": "Forge area restored. Anvil stable. Smoke steady."
+  },
+  "rewards": { "unlocksArea": "library", "worldChange": "Forge area fully restored." },
+  "_creatorNote": { "concept": "Hooks (pre-command hooks)", "lesson": "Pre-hooks run before main commands.", "realWorldParallel": "Hooks validate state before actions execute." }
+}
