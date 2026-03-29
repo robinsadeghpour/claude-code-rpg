@@ -1,83 +1,31 @@
-# Next.js Boilerplate
+# Claude Code RPG
 
-Production-ready Next.js monorepo starter. Auth, billing, database, email, and storage — all wired up.
+A cozy, Stardew Valley-style RPG where you learn Claude Code by actually using it.
 
-## Stack
+A developer gets pulled into a broken game world. The village is glitched — NPCs stutter, colors are wrong, things don't work. Use Claude Code to find and fix the bugs in the actual codebase, healing the world one quest at a time.
 
-- **Framework:** Next.js 16 (App Router, Turbopack)
-- **Monorepo:** Turborepo + pnpm workspaces
-- **API:** Hono (mounted via Next.js catch-all route)
-- **Auth:** BetterAuth (email/password, magic link, OAuth, API keys)
-- **Database:** Supabase (PostgreSQL) via Prisma 7
-- **Billing:** Stripe (checkout, portal, webhooks)
-- **Mail:** Resend + react-email
-- **Storage:** S3-compatible (presigned URLs)
-- **AI Chat:** Vercel AI SDK + assistant-ui (Claude, web search, memory)
-- **Linting:** Biome
-- **Styling:** Tailwind CSS + ShadCN
-
-## Structure
-
-```
-apps/web          — Next.js frontend (App Router)
-packages/api      — Hono API server
-packages/auth     — BetterAuth config
-packages/database — Prisma schema + queries
-packages/stripe   — Stripe billing
-packages/mail     — Email templates
-packages/ai       — AI model config (Claude via AI SDK gateway)
-packages/ai-chat  — Chat orchestrator, tools, title generation
-packages/memory   — Mem0 integration (optional)
-packages/storage  — S3 client
-packages/logs     — Logger (Consola)
-packages/utils    — Utilities
-config/           — App-wide config
-tooling/          — Shared TypeScript + Tailwind configs
-```
-
-## Getting Started
-
-1. Clone this repo
-2. `cp .env.example .env.local` and fill in values
-3. Create a [Supabase](https://supabase.com) project and copy the connection string into `DATABASE_URL` (use the "Transaction" pooler URL for the app, and the "Session" pooler URL for `MIGRATION_DATABASE_URL`)
-4. `pnpm install`
-5. `cd packages/database && pnpm migrate && pnpm generate`
-6. `pnpm dev`
-
-## Common Commands
+## Quick Start
 
 ```bash
-pnpm dev        # Start all apps
-pnpm build      # Build everything
-pnpm lint       # Biome check
-pnpm lint:fix   # Biome fix
-pnpm format     # Biome format
+git clone <repo-url>
+cd claude-code-rpg
+pnpm install
+pnpm dev
 ```
 
-## AI Chat (Optional)
+Open http://localhost:5173, then open Claude Code in the same directory.
 
-The `/chat` page provides a streaming AI chat with persistent history. All features are opt-in based on environment variables:
+## How to Play
 
-| Feature | Env var | Description |
-|---------|---------|-------------|
-| Chat (required) | `AI_GATEWAY_API_KEY` | AI SDK gateway key for Claude models |
-| Web search | `TAVILY_API_KEY` | Enables the web search tool |
-| Memory | `MEM0_API_KEY` | Enables memory storage/search tools |
+1. **Explore** the village with WASD, interact with E
+2. **Talk** to NPCs — they'll tell you what's wrong
+3. **Open Claude Code** and describe the problem
+4. **Fix the bug** in the real codebase
+5. **Return to the NPC** and interact to trigger the heal moment
+6. **Watch the world heal** — colors bloom, new areas unlock
 
-Without any keys, the chat page renders but won't function. With just `AI_GATEWAY_API_KEY`, you get plain chat. Add the other keys to progressively enable tools.
+## Requirements
 
-The chat uses:
-- **Backend:** `packages/ai-chat` orchestrator with `streamText()`, auto-generated titles
-- **Frontend:** `@assistant-ui/react` components at `apps/web/modules/ui/components/assistant-ui/`
-- **Database:** `Chat` and `ChatMessage` models in Prisma
-
-## Customizing
-
-1. **Brand & naming:** Find/replace `OneContext`/`onecontext`/`My App`/`myapp` across the codebase with your product name. Key files: `config/index.ts`, `package.json` (root + all workspaces), email templates in `packages/mail/`, and `apps/web/app/layout.tsx`
-2. **CLAUDE.md:** Update the project overview and any references to match your product. This file guides Claude Code — keeping it accurate saves time
-3. **Skills:** Review `.claude/skills/` and update any product-specific instructions (e.g., `coding-style/SKILL.md`)
-4. **API key prefix:** Update `apiKeyPrefix` in `config/index.ts`
-5. **Pricing:** Update `config/index.ts` payments section
-6. **Nav:** Edit `apps/web/modules/shared/components/app-sidebar.tsx`
-7. **Schema:** Add your models to `packages/database/prisma/schema.prisma`, then run `pnpm migrate && pnpm generate` in `packages/database`
-8. **Vercel preview pattern:** Update `VERCEL_PREVIEW_PATTERN` in `packages/auth/auth.ts`
+- Node.js 18+
+- pnpm
+- Claude Code
