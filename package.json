@@ -1,31 +1,29 @@
 {
-	"name": "onecontext",
-	"private": true,
-	"scripts": {
-		"build": "dotenv -c -- turbo build",
-		"dev": "dotenv -c -- turbo dev --concurrency 15",
-		"lint": "biome check .",
-		"lint:fix": "biome check . --write --unsafe",
-		"clean": "turbo clean",
-		"format": "biome format . --write",
-		"prepare": "husky",
-		"test:e2e": "playwright test",
-		"test:e2e:ui": "playwright test --ui"
-	},
-	"engines": {
-		"node": ">=20"
-	},
-	"packageManager": "pnpm@9.3.0",
-	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
-		"@onecontext/tsconfig": "workspace:*",
-		"@playwright/test": "^1.58.2",
-		"@types/node": "^22.10.5",
-		"dotenv": "^16.4.7",
-		"dotenv-cli": "^8.0.0",
-		"husky": "^9.1.7",
-		"tsx": "^4.19.2",
-		"turbo": "^2.8.4",
-		"typescript": "5.7.2"
-	}
+  "name": "claude-code-rpg",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "kaplay": "^3001.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zustand": "^5.0.0",
+    "howler": "^2.2.4"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@types/howler": "^2.2.0",
+    "@vitejs/plugin-react": "^4.4.0",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0"
+  }
 }
