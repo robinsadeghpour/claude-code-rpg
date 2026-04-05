@@ -1,0 +1,28 @@
+# KAPLAY Scenes Reference
+
+## Core concepts
+
+- Define scenes with `scene(name, callback)`.
+- Switch scenes with `go(name, data?)`.
+- Treat scenes as lifecycle boundaries: objects outside persistent mechanisms are destroyed on `go()`.
+
+## Data passing
+
+- Prefer object payloads for readability:
+  - `go("world", { spawn, area })`
+  - `scene("world", ({ spawn, area }) => { ... })`
+
+## Persistence
+
+- Use `stay()` on objects that should survive scene transitions (e.g. debug widgets, persistent overlays).
+- Keep scene initialization inside scene callbacks; avoid one-time setup that prevents re-entry.
+
+## Practical guidelines
+
+- Every player-facing mode should be a scene (menu, world, cutscene, etc.).
+- Scene callback should only orchestrate:
+  - asset usage
+  - entity spawn
+  - event wiring
+  - camera setup
+- Defer reusable logic to helper functions and `entities/` modules.

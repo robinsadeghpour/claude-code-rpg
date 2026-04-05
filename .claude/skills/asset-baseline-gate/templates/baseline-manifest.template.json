@@ -1,0 +1,33 @@
+{
+  "project_name": "my-project",
+  "version": 1,
+  "assets": [
+    {
+      "key": "grass-light",
+      "path": "public/assets/tiles/grass-light.png",
+      "kind": "tile",
+      "required_size": { "width": 256, "height": 256 },
+      "min_opaque_pixels": 1000,
+      "require_transparency": false,
+      "require_seam_check": true
+    },
+    {
+      "key": "flowers-pink",
+      "path": "public/assets/tiles/flowers-pink.png",
+      "kind": "tile-overlay",
+      "required_size": { "width": 256, "height": 256 },
+      "min_opaque_pixels": 200,
+      "require_transparency": true,
+      "require_seam_check": false
+    },
+    {
+      "key": "building-forge",
+      "path": "public/assets/sprites/building-forge.png",
+      "kind": "building",
+      "required_size": { "width": 535, "height": 844 },
+      "min_opaque_pixels": 15000,
+      "require_transparency": true,
+      "require_seam_check": false
+    }
+  ]
+}

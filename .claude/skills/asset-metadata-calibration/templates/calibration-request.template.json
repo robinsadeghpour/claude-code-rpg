@@ -1,0 +1,12 @@
+{
+  "asset_type": "building",
+  "entries": [
+    {
+      "sprite_key": "building-forge",
+      "asset_path": "public/assets/sprites/building-forge.png",
+      "target_width_px": 110,
+      "default_z": 4,
+      "collision_mode": "bottom-45-percent"
+    }
+  ]
+}

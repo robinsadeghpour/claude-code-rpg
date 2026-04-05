@@ -1,0 +1,19 @@
+{
+  "variants": [
+    {
+      "id": "healthy",
+      "filename_suffix": "",
+      "prompt_modifier": "healthy village state"
+    },
+    {
+      "id": "glitched",
+      "filename_suffix": "-glitched",
+      "prompt_modifier": "glitched state with subtle cyan and magenta corruption"
+    },
+    {
+      "id": "healed",
+      "filename_suffix": "-healed",
+      "prompt_modifier": "healed state with warm restored colors"
+    }
+  ]
+}

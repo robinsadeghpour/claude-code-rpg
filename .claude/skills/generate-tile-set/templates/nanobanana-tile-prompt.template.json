@@ -1,0 +1,24 @@
+{
+  "task": "Generate a seamless pixel art terrain tile.",
+  "output": {
+    "format": "png",
+    "background": "transparent",
+    "width": 256,
+    "height": 256
+  },
+  "style_lock": {
+    "style": "cozy stardew-like pixel art",
+    "line_quality": "crisp pixel edges"
+  },
+  "tile": {
+    "tile_type": "grass-light",
+    "variant_id": "healthy",
+    "prompt_modifier": "healthy village state"
+  },
+  "constraints": [
+    "seamless tiling on all edges",
+    "no text",
+    "no watermark",
+    "single tile texture only"
+  ]
+}

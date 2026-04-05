@@ -1,0 +1,18 @@
+# KAPLAY Physics Reference
+
+## Components
+
+- `area()` enables hit/collision region behavior.
+- `body()` enables movement resolution and physics interactions.
+
+## Collision flow
+
+- Detect with collide handlers.
+- Separate visual sprite and collision footprint when sprites are tall.
+- Keep collision boxes near lower body/footprint for top-down readability.
+
+## Practical guidance
+
+- Static obstacles: `body({ isStatic: true })`.
+- Dynamic movers: combine `move(...)`/manual movement with `area()` and/or `body()`.
+- Ensure colliders are aligned with rendered scale, not raw source dimensions.

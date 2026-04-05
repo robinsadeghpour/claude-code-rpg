@@ -4,115 +4,64 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Next.js boilerplate. Frontend: Next.js 16, Backend: HonoJS API, Auth: BetterAuth, DB: PostgreSQL via Prisma.
+Claude Code RPG — A cozy, Stardew Valley-style RPG where players learn Claude Code by finding and fixing real bugs in the game world. Built with Vite, React, TypeScript, and the Kaplay game framework.
 
-## Monorepo Structure
+## Tech Stack
 
-Turborepo + pnpm workspaces.
+- **Build Tool:** Vite 6
+- **Runtime:** React 19 + TypeScript 5.7
+- **Game Framework:** Kaplay 3001 (scene management, sprites, input, physics)
+- **Styling:** Tailwind CSS 4 + PostCSS
+- **State Management:** Zustand 5
+- **Dev Server:** Vite (port 5173)
 
-- **apps/web** — Next.js 16 app (App Router, Turbopack dev, React 19)
-- **packages/api** — Hono API server, mounted at `/api/*` via Next.js catch-all route
-- **packages/auth** — BetterAuth config (GitHub + Twitter OAuth, email/password, magic link, API keys)
-- **packages/database** — Prisma 7 with Supabase (PostgreSQL), singleton client, `@prisma/adapter-pg`
-- **packages/stripe** — Stripe checkout, portal, webhooks
-- **packages/storage** — S3-compatible storage client (presigned URLs)
-- **packages/mail** — Resend + react-email templates (preview on port 3005)
-- **packages/logs** — Consola logger wrapper
-- **packages/utils** — `getBaseUrl()` helper
-- **config/** — Centralized app config (auth, ui, api settings)
-- **tooling/typescript** — Shared tsconfigs (base, nextjs, react-library)
-- **tooling/tailwind** — Shared theme.css and tailwind-animate.css
+## Project Structure
+
+- **src/game/** — Core game logic
+  - `scenes/` — Menu, world, transition scenes
+  - `systems/` — Quest, glitch, crafting systems
+  - `entities/` — Player, NPC game objects
+  - `assets.ts` — Asset loading (sprites, tiles)
+  - `init.ts` — Game initialization
+- **src/ui/** — React UI overlay components (dialogue box, quest journal, HUD, heal overlay)
+- **src/data/** — Game data (JSON)
+  - `quests/` — Quest definitions with intentional bugs
+  - `areas/` — Area/map definitions
+  - `npcs/` — NPC dialogue and behavior
+- **src/server/** — Vite plugin for Claude API integration
+- **src/store/** — Zustand state stores
+- **public/assets/** — Static game assets (sprites, tiles)
 
 ## Common Commands
 
 ```bash
-pnpm dev                # Start all apps (turbo, concurrency 15)
-pnpm build              # Build all packages (dotenv + turbo)
-pnpm lint               # Biome check
-pnpm lint:fix           # Biome check --write --unsafe
-pnpm format             # Biome format --write
+pnpm dev      # Start Vite dev server at localhost:5173
+pnpm build    # TypeScript check + Vite production build
+pnpm preview  # Preview production build
 ```
 
-### Database (run from packages/database)
+## Architecture
 
-```bash
-pnpm generate           # Generate Prisma client
-pnpm migrate            # Create a Prisma migration
-pnpm studio             # Open Prisma Studio
-pnpm deploy-prod        # Deploy migrations to production
-```
+### Game Loop (Kaplay)
+The game runs on Kaplay's scene system. Player input (WASD movement, E to interact) is handled by Kaplay's event system. Scenes: menu → transition → world.
 
-All database commands use `dotenv -c -e ../../.env.local` to load env vars.
+### Quest System
+Quests contain intentional bugs in the codebase. NPCs provide hints about what's broken. Players use Claude Code to find and fix bugs in `src/game/*` and `src/data/*`, then return to the NPC to trigger quest-check validators (`src/game/systems/quest-checks.ts`).
 
-### Auth Schema Generation (run from packages/auth)
+### Glitch Effects
+Visual glitches are applied via the glitch system (`src/game/systems/glitch.ts`) and removed when bugs are fixed, creating "heal moments" with visual effects.
 
-```bash
-pnpm migrate            # Generates Prisma schema from BetterAuth config into packages/database/prisma/schema.prisma
-```
+### UI Layer
+React components overlay the Kaplay canvas. Zustand bridges game state to React for dialogue, HUD, and journal updates.
 
-This runs `@better-auth/cli generate` and outputs to the database package's schema file. After running this, you must also run `pnpm generate` in packages/database.
+## Coding Conventions
 
-## Architecture Patterns
-
-### API Routing
-
-All `/api/*` requests flow through a single Next.js catch-all route (`apps/web/app/api/[[...rest]]/route.ts`) that delegates to the Hono app from `packages/api`. The Hono app is mounted at `/api` base path.
-
-- Routes: health check (`/api/health`), auth (`/api/auth/**`)
-- OpenAPI spec at `/api/openapi`, interactive docs at `/api/docs` (Scalar, Saturn theme)
-- Auth middleware: dev mode uses `DEV_API_KEY` Bearer token, production uses BetterAuth cookie sessions
-
-### Auth Flow
-
-BetterAuth manages all auth. The Prisma schema is **auto-generated** from the BetterAuth config — do not hand-edit auth-related models in `schema.prisma`. To update auth tables: modify `packages/auth/auth.ts` → run `pnpm migrate` in packages/auth → run `pnpm generate` in packages/database.
-
-Plugins: username, admin, openAPI, apiKey (prefix: `app_`, rate limit: 60/min), magicLink. Social: GitHub, Twitter/X (optional, configured via env vars).
-
-### Web App Conventions
-
-- Path aliases: `@ui/*` → `modules/ui/*`, `@shared/*` → `modules/shared/*`
-- UI components go in `apps/web/modules/ui/components/` (shadcn/ui, added via `pnpm shadcn-ui` script)
-- Shared app components in `apps/web/modules/shared/components/`
-- `cn()` utility at `modules/ui/lib/utils.ts` (clsx + tailwind-merge)
-- State: Zustand, Forms: react-hook-form, Animations: Framer Motion, Toast: Sonner
-
-## Linting & Formatting
-
-Biome handles both linting and formatting (not ESLint/Prettier). Key rules:
-- `.tsx` files must use **kebab-case** filenames
-- Unused imports are errors
-- `noExplicitAny`: warn, `noForEach`: off, `useExhaustiveDependencies`: off, `noEmptyBlockStatements`: warn
-- Generated code (`packages/database/src/generated`) is excluded from linting
-
-## Coding Rules (Enforced)
-
-### API Routes — Always validate with Zod
-Every Hono route that accepts a request body MUST use `sValidator("json", schema)` from `@hono/standard-validator` and `c.req.valid("json")`. Never use raw `c.req.json()`. Define schemas at the top of the route file or in a co-located `types.ts`.
-
-### API Routes — Use the service/query layer
-Route handlers in `packages/api/src/routes/` must NOT import `db` from the database package directly. Database access goes through service functions (business logic) and query functions (Prisma calls). Architecture: **Router → Service → Query → Database**. This applies to ALL packages.
-
-### Styling — Use theme tokens, never hardcoded colors
-Never use raw Tailwind color classes like `bg-emerald-700`, `text-blue-500`, etc. Always use the theme CSS variable tokens defined in `tooling/tailwind/theme.css`: `bg-primary`, `text-primary`, `bg-accent`, `text-primary-foreground`, etc.
-
-### Error handling — No silent swallowing
-Never use `.catch(() => {})` or empty catch blocks. Always log errors using `packages/logs` logger or at minimum `console.warn` with context.
-
-### Imports — Use canonical paths
-Import `authClient` from `@shared/lib/api` (not directly from the auth package client). Use the re-export to keep a single source of truth.
-
-### Database — Always use migrations, never `db push`
-Never use `prisma db push` or `pnpm push` to apply schema changes. Always create a proper migration with `pnpm migrate` in `packages/database`.
-
-### Database — Use upsert for find-or-create patterns
-Never use `findFirst` + `create` as separate calls — this creates a race condition. Use `db.model.upsert()` for atomic find-or-create.
-
-### Security — Validate resource ownership
-When an API accepts a resource ID, always verify the resource belongs to the authenticated user before performing updates or deletes. Fetch the resource first, compare the owner, return 404 on mismatch.
-
-### Security — Never log secrets or tokens
-Never log sensitive data like magic link URLs, access tokens, API keys, or passwords. Only log non-sensitive identifiers (email, userId).
+- TypeScript strict mode
+- Kaplay entity-based game objects for the canvas layer
+- React for all menu/dialogue/HUD UI
+- Zustand for cross-component state (game store)
+- Keep game logic in `src/game/`, UI in `src/ui/`
 
 ## Environment
 
-Env vars are loaded via `dotenv-cli` with `-c` flag (loads `.env.local`). See `.env.example` at root and `turbo.json` `globalEnv` for the full list.
+Pure client-side game — no backend required. The Vite dev server handles everything. No `.env` file needed for local development.

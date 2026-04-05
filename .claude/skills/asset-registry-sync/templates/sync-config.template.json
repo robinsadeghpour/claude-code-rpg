@@ -1,0 +1,37 @@
+{
+  "project_root": ".",
+  "assets_root": "public/assets",
+  "registry_file": "src/game/assets.ts",
+  "source_dirs": ["src/game/scenes", "src/game/entities"],
+  "ignore_patterns": [
+    "**/backup/**",
+    "**/*-original.png",
+    "**/*.svg"
+  ],
+  "naming_rules": {
+    "tiles": {
+      "pattern": "^[a-z]+-[a-z0-9-]+\\.png$",
+      "description": "{terrain}-{variant}.png"
+    },
+    "npcs": {
+      "pattern": "^npc-[a-z]+(-(alt|idle|walk))?\\.png$",
+      "description": "npc-{name}[-variant].png"
+    },
+    "buildings": {
+      "pattern": "^building-[a-z]+(-(glitched|healed))?\\.png$",
+      "description": "building-{name}[-state].png"
+    },
+    "props": {
+      "pattern": "^[a-z]+-?[a-z0-9]*\\.png$",
+      "description": "{name}[-variant].png"
+    }
+  },
+  "expected_extensions": [".png"],
+  "category_subdirs": {
+    "tiles": "tiles",
+    "npcs": "sprites",
+    "buildings": "sprites",
+    "props": "sprites/props",
+    "player": "sprites"
+  }
+}

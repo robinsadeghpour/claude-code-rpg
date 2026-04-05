@@ -1,0 +1,34 @@
+{
+  "task": "Generate a single standalone prop sprite for a top-down pixel RPG.",
+  "output": {
+    "format": "png",
+    "background": "transparent",
+    "width": 256,
+    "height": 256
+  },
+  "prop": {
+    "id": "well-wood",
+    "category": "structure",
+    "size_class": "medium",
+    "materials": [
+      "wood",
+      "stone"
+    ],
+    "must_keep_details": [
+      "roof cap",
+      "bucket",
+      "support posts"
+    ]
+  },
+  "variant": {
+    "id": "primary",
+    "modifier": "clean healthy state"
+  },
+  "constraints": [
+    "single centered prop",
+    "no text",
+    "no watermark",
+    "transparent background",
+    "crisp pixel silhouette"
+  ]
+}

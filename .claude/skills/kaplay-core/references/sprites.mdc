@@ -1,0 +1,28 @@
+# KAPLAY Sprites Reference
+
+## Loading
+
+- Load assets with `loadSprite(key, path, options?)`.
+- For sprite sheets, define:
+  - `sliceX`
+  - `sliceY`
+  - `anims` ranges
+
+## Usage
+
+- Attach sprite via `sprite(key, opts?)` component.
+- Common sprite opts:
+  - `frame`
+  - `anim`
+  - `flipX` / `flipY`
+
+## Animation execution
+
+- Trigger with `obj.play("anim-name")`.
+- Keep animation names semantically stable (`walk-down`, `idle-left`).
+
+## Reliability rules
+
+- Never rely on implicit frame meaning; always encode through `anims`.
+- Keep frame ordering deterministic and documented in project recipes.
+- Maintain one naming convention for runtime keys and file names.

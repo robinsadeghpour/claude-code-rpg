@@ -1,0 +1,26 @@
+{
+  "prop_id": "well-wood",
+  "display_name": "Wooden Well",
+  "category": "structure",
+  "size_class": "medium",
+  "style_lock": {
+    "project_style": "cozy pixel art rpg",
+    "palette_mode": "brand-and-tone",
+    "render_constraints": [
+      "transparent background",
+      "pixel art only",
+      "crisp silhouette"
+    ]
+  },
+  "visual": {
+    "materials": [
+      "wood",
+      "stone"
+    ],
+    "must_keep_details": [
+      "roof cap",
+      "bucket",
+      "support posts"
+    ]
+  }
+}

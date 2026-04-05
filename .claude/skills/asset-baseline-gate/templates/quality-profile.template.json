@@ -1,0 +1,12 @@
+{
+  "profile_name": "default",
+  "defaults": {
+    "allowed_formats": [
+      ".png",
+      ".webp"
+    ],
+    "min_transparent_ratio_when_required": 0.1,
+    "max_tile_edge_diff": 35.0,
+    "fail_on_missing": true
+  }
+}

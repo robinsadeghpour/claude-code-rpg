@@ -4,6 +4,8 @@ import { DialogueBox } from "./ui/dialogue-box";
 import { HealOverlay } from "./ui/heal-overlay";
 import { QuestJournal } from "./ui/quest-journal";
 import { HUD } from "./ui/hud";
+import { Bookshelf } from "./ui/bookshelf";
+import { SkillEditor } from "./ui/skill-editor";
 
 export function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -21,6 +23,8 @@ export function App() {
       <HealOverlay />
       <QuestJournal />
       <HUD />
+      <Bookshelf />
+      <SkillEditor />
     </div>
   );
 }

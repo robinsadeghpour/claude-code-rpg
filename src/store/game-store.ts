@@ -2,7 +2,24 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { DialogueLine, NPCState, QuestState } from "./types";
 
+export interface SkillEntry {
+  name: string;
+  description: string;
+  category: string;
+  path: string;
+  content?: string;
+}
+
+export interface AgentEntry {
+  name: string;
+  role: string;
+  description: string;
+  path: string;
+}
+
 interface GameStore {
+  inWorld: boolean;
+  setInWorld: (val: boolean) => void;
   playerPosition: { x: number; y: number };
   currentArea: string;
 
@@ -28,12 +45,30 @@ interface GameStore {
   healArea: (areaId: string) => void;
 
   savePosition: (x: number, y: number) => void;
+
+  // Claude data (Workshop)
+  skills: SkillEntry[];
+  agents: AgentEntry[];
+  claudeLoading: boolean;
+  isBookshelfOpen: boolean;
+  isEditorOpen: boolean;
+  editingSkill: string | null;
+  fetchSkills: () => Promise<void>;
+  fetchAgents: () => Promise<void>;
+  fetchSkillContent: (name: string) => Promise<string | null>;
+  saveSkill: (name: string, content: string) => Promise<boolean>;
+  openBookshelf: () => void;
+  closeBookshelf: () => void;
+  openEditor: (skillName?: string | null) => void;
+  closeEditor: () => void;
 }
 
 export const useGameStore = create<GameStore>()(
   persist(
     (set, get) => ({
-      playerPosition: { x: 400, y: 300 },
+      inWorld: false,
+      setInWorld: (val) => set({ inWorld: val }),
+      playerPosition: { x: 400, y: 380 },
       currentArea: "village-square",
 
       npcStates: {},
@@ -76,6 +111,80 @@ export const useGameStore = create<GameStore>()(
         })),
 
       savePosition: (x, y) => set({ playerPosition: { x, y } }),
+
+      // Claude data (Workshop)
+      skills: [],
+      agents: [],
+      claudeLoading: false,
+      isBookshelfOpen: false,
+      isEditorOpen: false,
+      editingSkill: null,
+
+      fetchSkills: async () => {
+        set({ claudeLoading: true });
+        try {
+          const res = await fetch("/api/claude/skills");
+          const data = await res.json();
+          set({ skills: data });
+        } catch (err) {
+          console.warn("Failed to fetch skills:", err);
+        } finally {
+          set({ claudeLoading: false });
+        }
+      },
+
+      fetchAgents: async () => {
+        try {
+          const res = await fetch("/api/claude/agents");
+          const data = await res.json();
+          set({ agents: data });
+        } catch (err) {
+          console.warn("Failed to fetch agents:", err);
+        }
+      },
+
+      fetchSkillContent: async (name: string) => {
+        try {
+          const res = await fetch(`/api/claude/skills/${encodeURIComponent(name)}`);
+          if (!res.ok) return null;
+          const data = await res.json();
+          // Update the skill entry with content
+          set((s) => ({
+            skills: s.skills.map((sk) =>
+              sk.name === name || sk.path.includes(`/${name}/`)
+                ? { ...sk, content: data.content }
+                : sk,
+            ),
+          }));
+          return data.content as string;
+        } catch (err) {
+          console.warn("Failed to fetch skill content:", err);
+          return null;
+        }
+      },
+
+      saveSkill: async (name: string, content: string) => {
+        try {
+          const res = await fetch(`/api/claude/skills/${encodeURIComponent(name)}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content }),
+          });
+          if (res.ok) {
+            await get().fetchSkills();
+            return true;
+          }
+          return false;
+        } catch (err) {
+          console.warn("Failed to save skill:", err);
+          return false;
+        }
+      },
+
+      openBookshelf: () => set({ isBookshelfOpen: true }),
+      closeBookshelf: () => set({ isBookshelfOpen: false, isEditorOpen: false, editingSkill: null }),
+      openEditor: (skillName = null) => set({ isEditorOpen: true, editingSkill: skillName ?? null }),
+      closeEditor: () => set({ isEditorOpen: false, editingSkill: null }),
     }),
     {
       name: "claude-code-rpg-save",

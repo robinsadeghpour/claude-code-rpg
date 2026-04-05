@@ -1,0 +1,27 @@
+# Sprite Sheet Conventions (Project Recipe)
+
+## Character sheet contract
+
+For directional movement sheets:
+
+- Grid: `4x4`
+- Frame size: project-defined fixed cell
+- Rows:
+  - Row 0 -> down
+  - Row 1 -> up
+  - Row 2 -> right
+  - Row 3 -> left
+
+## Animation naming contract
+
+- `walk-down` -> frames `0..3`
+- `walk-up` -> frames `4..7`
+- `walk-right` -> frames `8..11`
+- `walk-left` -> frames `12..15`
+- idles at first frame of each row
+
+## Quality checks
+
+- No mixed directions within row
+- Consistent silhouette and anchor point
+- Idle/walk transitions loop cleanly

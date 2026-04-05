@@ -1,0 +1,19 @@
+# KAPLAY Animation Reference
+
+## Sources of animation
+
+- Sprite sheet animations (`anims` in `loadSprite`).
+- Transform-based animation/tweens.
+- Procedural updates (`onUpdate` with time-based movement).
+
+## Rules of thumb
+
+- Keep animation names behavior-oriented (`walk-up`, `idle-right`) not art-oriented.
+- Trigger transitions from state changes, not every frame.
+- Ensure idle animation fallback for each movement direction.
+
+## Stability patterns
+
+- Only call `play()` when animation actually changes.
+- Avoid restarting the same loop every frame.
+- Use explicit direction state tracking to prevent jitter.

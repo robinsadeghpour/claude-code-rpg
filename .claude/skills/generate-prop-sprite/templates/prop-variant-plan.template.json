@@ -1,0 +1,23 @@
+{
+  "output": {
+    "width": 256,
+    "height": 256
+  },
+  "variants": [
+    {
+      "id": "primary",
+      "filename_suffix": "",
+      "prompt_modifier": "clean healthy state"
+    },
+    {
+      "id": "glitched",
+      "filename_suffix": "-glitched",
+      "prompt_modifier": "glitched state with subtle corruption accents"
+    },
+    {
+      "id": "healed",
+      "filename_suffix": "-healed",
+      "prompt_modifier": "healed state with warm restored colors"
+    }
+  ]
+}

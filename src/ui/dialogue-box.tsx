@@ -1,16 +1,8 @@
-import { useEffect } from "react";
 import { useGameStore } from "../store/game-store";
 
 export function DialogueBox() {
   const { isDialogueOpen, currentDialogue, dialogueIndex, advanceDialogue } =
     useGameStore();
-
-  useEffect(() => {
-    if (!isDialogueOpen) return;
-    const handler = () => advanceDialogue();
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [isDialogueOpen, advanceDialogue]);
 
   if (!isDialogueOpen || !currentDialogue) return null;
 

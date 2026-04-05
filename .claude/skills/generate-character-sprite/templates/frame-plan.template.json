@@ -1,0 +1,63 @@
+{
+  "frame_size": {
+    "width": 256,
+    "height": 256
+  },
+  "rows": [
+    {
+      "direction": "down",
+      "frames": [
+        "down-0",
+        "down-1",
+        "down-2",
+        "down-3"
+      ],
+      "poses": [
+        "idle neutral stance",
+        "walk step with left foot forward",
+        "idle variant slight bounce",
+        "walk step with right foot forward"
+      ]
+    },
+    {
+      "direction": "up",
+      "frames": [
+        "up-0",
+        "up-1",
+        "up-2",
+        "up-3"
+      ],
+      "poses": [
+        "idle neutral stance, back view",
+        "walk step with left foot forward, back view",
+        "idle variant slight bounce, back view",
+        "walk step with right foot forward, back view"
+      ]
+    },
+    {
+      "direction": "right",
+      "frames": [
+        "right-0",
+        "right-1",
+        "right-2",
+        "right-3"
+      ],
+      "poses": [
+        "idle neutral stance, right profile",
+        "walk step with left foot forward, right profile",
+        "idle variant slight bounce, right profile",
+        "walk step with right foot forward, right profile"
+      ]
+    },
+    {
+      "direction": "left",
+      "frames": [
+        "left-0",
+        "left-1",
+        "left-2",
+        "left-3"
+      ],
+      "source": "mirror-right"
+    }
+  ]
+}

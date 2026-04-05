@@ -1,0 +1,16 @@
+{
+  "description": "QA check for newly generated assets",
+  "inputs": [
+    {
+      "path": "public/assets/sprites/building-forge.png",
+      "category": "buildings",
+      "spritesheet": null
+    },
+    {
+      "path": "public/assets/sprites/player.png",
+      "category": "player",
+      "spritesheet": { "cols": 4, "rows": 4 }
+    }
+  ],
+  "fail_on_warnings": false
+}

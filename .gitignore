@@ -1,22 +1,15 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 node_modules
 .pnp
 .pnp.js
 
+# build output
+dist/
+build
+*.tsbuildinfo
+
 # testing
 coverage
-
-# next.js
-.next/
-out/
-build
-.swc/
-
-# misc
-.DS_Store
-*.pem
 
 # debug
 npm-debug.log*
@@ -31,32 +24,34 @@ dev.log
 .env.test.local
 .env.production.local
 
-# turbo
-.turbo
+# misc
+.DS_Store
+*.pem
 
-# ui
-dist/
-
-# typescript
-*.tsbuildinfo
-
+# IDE
 .idea
-
-**/.ignore
 .vscode/settings.json
+**/.ignore
 
-# Claude
+# Claude Code
 .claude/settings.local.json
 .claude/logs/
+.claude/projects/
+.claude/agents/
 .mcp.json
 
-# Playwright
-e2e/.auth/
-playwright/.auth
-playwright-report/
-test-results/
+# Superpowers / Playwright
+.superpowers/
+.playwright-cli/
 .playwright-mcp/
 .playwright/
+playwright-report/
+test-results/
+e2e/.auth/
+playwright/.auth
 
+# Python
+__pycache__/
 
+# pnpm
 .pnpm-store/

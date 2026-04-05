@@ -1,0 +1,70 @@
+{
+  "categories": {
+    "tiles": {
+      "expected_width": 256,
+      "expected_height": 256,
+      "tolerance_px": 0,
+      "path_glob": "public/assets/tiles/*.png",
+      "require_square": true,
+      "require_transparency": false,
+      "max_file_size_bytes": 200000,
+      "min_file_size_bytes": 500,
+      "naming_pattern": "^[a-z]+-[a-z0-9-]+\\.png$"
+    },
+    "npcs": {
+      "min_width": 200,
+      "min_height": 300,
+      "max_width": 600,
+      "max_height": 900,
+      "path_glob": "public/assets/sprites/npc-*.png",
+      "require_square": false,
+      "require_transparency": true,
+      "min_transparent_ratio": 0.20,
+      "max_file_size_bytes": 500000,
+      "min_file_size_bytes": 1000,
+      "naming_pattern": "^npc-[a-z]+(-(alt|idle|walk))?\\.png$"
+    },
+    "buildings": {
+      "min_width": 200,
+      "min_height": 300,
+      "max_width": 700,
+      "max_height": 1100,
+      "path_glob": "public/assets/sprites/building-*.png",
+      "require_square": false,
+      "require_transparency": true,
+      "min_transparent_ratio": 0.20,
+      "max_file_size_bytes": 800000,
+      "min_file_size_bytes": 1000,
+      "naming_pattern": "^building-[a-z]+(-(glitched|healed))?\\.png$"
+    },
+    "props": {
+      "min_width": 50,
+      "min_height": 50,
+      "max_width": 600,
+      "max_height": 600,
+      "path_glob": "public/assets/sprites/props/*.png",
+      "require_square": false,
+      "require_transparency": true,
+      "min_transparent_ratio": 0.25,
+      "max_file_size_bytes": 300000,
+      "min_file_size_bytes": 500,
+      "naming_pattern": "^[a-z]+-?[a-z0-9]*\\.png$"
+    },
+    "player": {
+      "min_width": 256,
+      "min_height": 256,
+      "max_width": 2048,
+      "max_height": 2048,
+      "path_glob": "public/assets/sprites/player*.png",
+      "require_square": true,
+      "require_transparency": true,
+      "min_transparent_ratio": 0.10,
+      "spritesheet": {
+        "cols": 4,
+        "rows": 4
+      },
+      "max_file_size_bytes": 2000000,
+      "min_file_size_bytes": 10000
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import kaplay from "kaplay";
+import { loadAssets } from "./assets";
 import { menuScene } from "./scenes/menu";
 import { transitionScene } from "./scenes/transition";
 import { worldScene } from "./scenes/world";
@@ -18,8 +19,12 @@ export function initGame(canvas: HTMLCanvasElement) {
       down: { keyboard: ["s", "down"] },
       left: { keyboard: ["a", "left"] },
       right: { keyboard: ["d", "right"] },
+      bookshelf: { keyboard: ["k"] },
     },
   });
+
+  // Load all sprite assets
+  loadAssets(k);
 
   k.scene("menu", () => menuScene(k));
   k.scene("transition", () => transitionScene(k));

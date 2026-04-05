@@ -1,0 +1,21 @@
+{
+  "assets": [
+    {
+      "sprite_key": "building-forge",
+      "asset_path": "public/assets/sprites/building-forge.png",
+      "source_size": {
+        "width": 535,
+        "height": 844
+      },
+      "recommended_scale": 0.2056,
+      "anchor": "topleft",
+      "z": 4,
+      "collision_box": {
+        "x": 0,
+        "y": 109,
+        "width": 110,
+        "height": 85
+      }
+    }
+  ]
+}

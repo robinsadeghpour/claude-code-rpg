@@ -1,0 +1,19 @@
+# KAPLAY Tags Reference
+
+## Why tags
+
+Tags provide lightweight grouping and query semantics for runtime objects.
+
+## Common usage
+
+- Add tags in object component arrays: `"player"`, `"npc"`, `"interactable"`.
+- Use tag-based handlers for broad behavior:
+  - collision by class
+  - batch updates
+  - debug filtering
+
+## Best practices
+
+- Keep tags semantic and role-based.
+- Avoid overloading one tag for unrelated systems.
+- Prefer explicit object references for owner-specific behavior.

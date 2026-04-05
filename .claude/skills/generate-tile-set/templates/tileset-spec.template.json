@@ -1,0 +1,29 @@
+{
+  "tileset_id": "village-core",
+  "tile_size": {
+    "width": 256,
+    "height": 256
+  },
+  "style_lock": {
+    "project_style": "cozy pixel art rpg",
+    "palette_mode": "brand-and-tone",
+    "render_constraints": [
+      "pixel art only",
+      "crisp edges",
+      "no anti-aliased blur"
+    ]
+  },
+  "tile_types": [
+    "grass-light",
+    "grass-medium",
+    "dirt-center",
+    "dirt-path",
+    "water-deep",
+    "water-edge"
+  ],
+  "overlay_tile_types": [
+    "flowers-pink",
+    "tall-grass",
+    "mushrooms"
+  ]
+}

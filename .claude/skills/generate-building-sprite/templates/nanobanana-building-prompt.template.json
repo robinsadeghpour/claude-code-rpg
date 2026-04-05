@@ -1,0 +1,42 @@
+{
+  "task": "Generate a single front-facing building sprite for a top-down cozy pixel RPG.",
+  "output": {
+    "format": "png",
+    "background": "transparent",
+    "width": 512,
+    "height": 768
+  },
+  "style_lock": {
+    "style": "Stardew-like pixel art",
+    "line_quality": "crisp pixel edges",
+    "perspective": "front-facing with slight top-down roof visibility"
+  },
+  "building": {
+    "id": "forge",
+    "name": "Village Forge",
+    "architecture": {
+      "silhouette": "medium-large village building",
+      "materials": [
+        "stone base",
+        "wooden supports",
+        "clay tile roof"
+      ],
+      "must_keep_details": [
+        "center door",
+        "two windows",
+        "small chimney"
+      ]
+    }
+  },
+  "variant": {
+    "id": "primary",
+    "modifier": "healthy village state, welcoming and clean"
+  },
+  "constraints": [
+    "single building centered in frame",
+    "no extra props around building",
+    "no text",
+    "no watermark",
+    "transparent background"
+  ]
+}

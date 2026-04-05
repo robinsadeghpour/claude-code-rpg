@@ -1,0 +1,23 @@
+{
+  "output": {
+    "width": 512,
+    "height": 768
+  },
+  "variants": [
+    {
+      "id": "primary",
+      "filename_suffix": "",
+      "prompt_modifier": "healthy village state, welcoming and clean"
+    },
+    {
+      "id": "glitched",
+      "filename_suffix": "-glitched",
+      "prompt_modifier": "same building geometry, but glitched state with subtle cyan-magenta corruption accents"
+    },
+    {
+      "id": "healed",
+      "filename_suffix": "-healed",
+      "prompt_modifier": "same building geometry, healed state with warm restored colors"
+    }
+  ]
+}

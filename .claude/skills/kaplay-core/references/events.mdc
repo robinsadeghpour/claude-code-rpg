@@ -1,0 +1,27 @@
+# KAPLAY Events Reference
+
+## Event model
+
+- Event handlers are `onXxx(...)` style listeners.
+- Handlers return controllers that can be canceled/paused.
+
+## Event scopes
+
+- App/global events: input and app lifecycle (`onKeyPress`, `onLoad`).
+- Root events: run with root lifecycle (`onUpdate`, `onDraw`).
+- Object events: tied to object lifecycle (`obj.onUpdate`, `obj.onDestroy`).
+- Tag-based handlers: apply event logic to many objects with same tag.
+
+## Component-provided events
+
+- Some components add event channels:
+  - `area()` -> collision events
+  - `health()` -> hurt/heal/death events
+  - `body()` -> physics events
+  - `sprite()` -> animStart/animEnd
+
+## Best practices
+
+- Prefer object-local events for behavior that should stop when object is paused/destroyed.
+- Use tag handlers for bulk behavior, not for singular ownership logic.
+- Reserve global handlers for app-level concerns.

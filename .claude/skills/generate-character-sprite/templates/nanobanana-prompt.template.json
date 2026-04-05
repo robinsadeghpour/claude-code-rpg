@@ -1,0 +1,37 @@
+{
+  "task": "Generate one frame for a top-down RPG character sprite sheet.",
+  "output": {
+    "format": "png",
+    "background": "transparent",
+    "width": 256,
+    "height": 256
+  },
+  "style_lock": {
+    "style": "cozy Stardew-like pixel art",
+    "consistency": "match style anchor character exactly",
+    "line_quality": "crisp pixel edges"
+  },
+  "frame": {
+    "id": "down-0",
+    "direction": "down",
+    "pose": "idle neutral stance"
+  },
+  "subject": {
+    "description": "A young character with messy warm brown hair and a sky-blue tunic.",
+    "expression": "warm and curious",
+    "clothing": [
+      "sky-blue tunic",
+      "dark navy pants",
+      "brown boots"
+    ]
+  },
+  "constraints": [
+    "single character centered",
+    "full body visible",
+    "no extra props",
+    "no text",
+    "no watermark",
+    "no shadows outside character silhouette",
+    "pixel-art proportions stay consistent with prior frames"
+  ]
+}

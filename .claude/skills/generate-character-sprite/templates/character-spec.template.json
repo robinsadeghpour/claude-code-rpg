@@ -1,0 +1,39 @@
+{
+  "character_id": "apprentice-01",
+  "display_name": "Apprentice",
+  "style_lock": {
+    "project_style": "cozy pixel art rpg",
+    "palette_mode": "brand-and-tone healthy palette",
+    "outline": "thin 1px dark outline on character silhouette",
+    "canvas_per_frame": {
+      "width": 256,
+      "height": 256
+    },
+    "render_constraints": [
+      "transparent background",
+      "pixel art only",
+      "no antialiasing blur",
+      "consistent face and hair across all frames"
+    ]
+  },
+  "subject": {
+    "age": "young adult",
+    "expression": "warm and curious",
+    "hair": {
+      "color": "warm brown",
+      "style": "messy medium-length"
+    },
+    "outfit": {
+      "top": "sky-blue tunic",
+      "bottom": "dark navy pants",
+      "boots": "brown leather"
+    },
+    "accessories": [
+      "small belt pouch"
+    ],
+    "silhouette_notes": [
+      "large head, compact body",
+      "readable at 48px display width"
+    ]
+  }
+}

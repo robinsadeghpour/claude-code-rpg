@@ -1,0 +1,22 @@
+# Scene Patterns (Project Recipe)
+
+## Current project shape
+
+- Asset loading centralized in `src/game/assets.ts`.
+- Scene composition in `src/game/scenes/*`.
+- Entity behavior in `src/game/entities/*`.
+
+## Recommended scene template
+
+1. Set deterministic scene constants (`worldW`, `worldH`, `tileSize`).
+2. Spawn map layers/terrain.
+3. Spawn environment props/buildings.
+4. Spawn player and NPC entities.
+5. Wire interactions/events.
+6. Configure camera and clamps.
+
+## Transition rules
+
+- Enter gameplay scene only after assets are guaranteed loaded.
+- Keep menu and world scenes independent and re-enterable.
+- Avoid singleton scene-local mutable state outside scene callback.

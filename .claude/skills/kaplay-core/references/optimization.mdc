@@ -1,0 +1,19 @@
+# KAPLAY Optimization Reference
+
+## Core principles
+
+- Choose collision strategy appropriate to world shape and movement patterns.
+- Avoid unnecessary game object creation for purely visual/static rendering.
+- Remove or hide off-screen entities to reduce update/draw cost.
+
+## Practical tactics
+
+- Use `offscreen({ destroy: true })` for throwaway entities (projectiles/effects).
+- Use `offscreen({ hide: true, pause: true })` for large sparse maps.
+- Prefer local object timers and local input handlers where lifecycle-scoped behavior is desired.
+
+## Maintainability/perf balance
+
+- Global timers/handlers can leak behavior after object destruction.
+- Object-local APIs are safer for state machines and scene-local logic.
+- Keep asset sizes and draw count in check before adding new effects.

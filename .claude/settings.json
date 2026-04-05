@@ -32,7 +32,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Before finishing, you MUST check for TypeScript and linting errors by calling the mcp__ide__getDiagnostics tool. If there are any errors (not warnings) in files you edited during this session, you must fix them before stopping. Return {\"decision\": \"block\", \"reason\": \"Must check IDE diagnostics for type errors before finishing\"} to remind yourself to check, unless you have already checked diagnostics and fixed all errors in this turn."
+            "prompt": "Before finishing, check for TypeScript and linting errors in files you edited during this session. If the mcp__ide__getDiagnostics tool is available, use it. If it is not available (e.g. in CLI mode), run 'pnpm build' via Bash instead to catch TypeScript errors. If there are any errors (not warnings) in files you edited, you must fix them before stopping. If no files were edited, or if all checks pass, return {\"decision\": \"allow\"}. Return {\"decision\": \"block\", \"reason\": \"Must fix type errors before finishing\"} only if actual errors are found."
           }
         ]
       }

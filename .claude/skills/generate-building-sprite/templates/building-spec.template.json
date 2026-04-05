@@ -1,0 +1,32 @@
+{
+  "building_id": "forge",
+  "display_name": "Village Forge",
+  "style_lock": {
+    "project_style": "cozy pixel art rpg",
+    "perspective": "front-facing with slight top-down roof visibility",
+    "palette_mode": "brand-and-tone healthy palette",
+    "render_constraints": [
+      "pixel art only",
+      "transparent background",
+      "crisp edges",
+      "no anti-aliased blur"
+    ]
+  },
+  "architecture": {
+    "silhouette": "medium-large village building",
+    "materials": [
+      "stone base",
+      "wooden supports",
+      "clay tile roof"
+    ],
+    "must_keep_details": [
+      "center door",
+      "two windows",
+      "small chimney"
+    ],
+    "color_notes": [
+      "warm neutral walls",
+      "cool roof accents"
+    ]
+  }
+}

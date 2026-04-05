@@ -1,7 +1,14 @@
 {
   "name": "claude-code-rpg",
   "version": "0.1.0",
-  "private": true,
+  "description": "A cozy, Stardew Valley-style RPG where you learn Claude Code by finding and fixing real bugs in the game world",
+  "license": "Apache-2.0",
+  "author": "Robin Sadeghpour Faraj",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robinsadeghpour/claude-code-rpg"
+  },
+  "keywords": ["rpg", "claude-code", "educational", "kaplay", "game", "stardew-valley"],
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,7 +16,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "howler": "^2.2.4",
     "kaplay": "^3001.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -17,7 +23,6 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
-    "@types/howler": "^2.2.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.4.0",

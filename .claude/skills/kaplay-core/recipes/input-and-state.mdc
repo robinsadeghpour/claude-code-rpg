@@ -1,0 +1,18 @@
+# Input and State (Project Recipe)
+
+## Movement state pattern
+
+- Track direction and movement booleans.
+- Start walk animation only when movement starts or direction changes.
+- Return to idle animation when movement stops.
+
+## Input prioritization
+
+- Resolve directional input deterministically (project currently uses prioritized `if/else` order).
+- Keep interaction locks explicit (`interacting` flag style).
+
+## Object-local behavior
+
+- Place update logic in `obj.onUpdate`.
+- Keep shadow/auxiliary visual sync in same update loop.
+- Avoid global handlers when behavior should pause with object lifecycle.
