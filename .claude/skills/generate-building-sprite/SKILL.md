@@ -37,6 +37,35 @@ Always apply in this order:
 5. Validate each final PNG:
    - `uv run --script .claude/skills/generate-building-sprite/scripts/validate_building.py --image <sprite.png>`
 
+## Placement
+
+After validation, place the final sprite where the game's file watcher can detect it:
+
+```bash
+cp <validated.png> game-assets/buildings/<building-id>.png
+```
+
+The building ID must match an entry in `game-data/buildings.json`. Existing entries:
+- `town-hall` → `town-hall.png`
+- `forge` → `forge.png`
+- `library` → `library.png`
+
+The file watcher detects the new file, updates `game-data/world-state.json`, and the building spawner renders it in the village automatically.
+
+If the building is new (not in `buildings.json`), add a registry entry:
+
+```json
+{
+  "position": [x, y],
+  "spriteKey": "building-<id>",
+  "assetFile": "<id>.png",
+  "scale": 0.23,
+  "label": "Building Name",
+  "interactable": true,
+  "unlocks": []
+}
+```
+
 ## Rules
 
 - Keep style-lock fields identical across all buildings in the same region.

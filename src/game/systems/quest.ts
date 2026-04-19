@@ -1,25 +1,14 @@
 import { useGameStore } from "../../store/game-store";
-import type { QuestData, QuestState } from "../../store/types";
-import missingCharterData from "../../data/quests/quest-missing-charter.json";
-import forgottenPrepData from "../../data/quests/quest-forgotten-prep.json";
+import type { QuestState } from "../../store/types";
+import { quests } from "../loader";
 import { runQuestCheck } from "./quest-checks";
-
-const questRegistry: Record<string, QuestData> = {
-  "missing-charter": missingCharterData as QuestData,
-  "forgotten-prep": forgottenPrepData as QuestData,
-};
-
-// Which quests unlock when a given quest is completed
-const questUnlockMap: Record<string, string[]> = {
-  "missing-charter": ["forgotten-prep"],
-};
+import { onFileEvent } from "./file-watcher";
 
 export function getQuestState(questId: string): QuestState {
   const store = useGameStore.getState();
   const runtimeState = store.questStates[questId];
   if (runtimeState) return runtimeState;
-  // Fall back to the data file's initial state
-  const quest = questRegistry[questId];
+  const quest = quests[questId];
   if (!quest) {
     console.warn(`Unknown questId: ${questId}`);
     return "locked";
@@ -27,8 +16,17 @@ export function getQuestState(questId: string): QuestState {
   return quest.state;
 }
 
+/** Get the currently active quest (first non-completed, non-locked quest) */
+export function getActiveQuest() {
+  for (const quest of Object.values(quests)) {
+    const state = getQuestState(quest.id);
+    if (state === "active" || state === "available") return quest;
+  }
+  return null;
+}
+
 export function tryCompleteQuest(questId: string): boolean {
-  const quest = questRegistry[questId];
+  const quest = quests[questId];
   if (!quest) {
     console.warn(`tryCompleteQuest: unknown questId: ${questId}`);
     return false;
@@ -45,8 +43,8 @@ export function tryCompleteQuest(questId: string): boolean {
   // Mark quest completed
   store.setQuestState(questId, "completed");
 
-  // Heal the NPC
-  store.setNPCState(quest.npcId, "healed");
+  // Mark NPC as fulfilled
+  store.setNPCState(quest.npcId, "fulfilled");
 
   // Trigger heal moment
   store.triggerHeal(quest.npcId, quest.healMoment.visual, quest.healMoment.audio);
@@ -57,14 +55,38 @@ export function tryCompleteQuest(questId: string): boolean {
     store.finishHeal();
   }, quest.healMoment.duration);
 
-  // Unlock dependent quests
-  const toUnlock = questUnlockMap[questId] ?? [];
-  for (const dependentId of toUnlock) {
-    const depState = getQuestState(dependentId);
-    if (depState === "locked") {
-      store.setQuestState(dependentId, "available");
+  // Unlock dependent quests (data-driven from rewards.unlocksNPC)
+  // Find quests whose npcId matches the unlocked NPC
+  if (quest.rewards.unlocksNPC) {
+    const unlockedNpcId = quest.rewards.unlocksNPC;
+    for (const [depId, depQuest] of Object.entries(quests)) {
+      if (depQuest.npcId === unlockedNpcId && getQuestState(depId) === "locked") {
+        store.setQuestState(depId, "available");
+      }
     }
   }
 
   return true;
+}
+
+/**
+ * Start listening for file watcher events and auto-check quests.
+ * When a building asset appears, refresh world state and try to complete
+ * any quest that depends on that asset.
+ */
+export function startQuestWatcher() {
+  return onFileEvent(async (event) => {
+    if (event.type !== "created" || event.category !== "building") return;
+
+    // Refresh world state so quest checks see the new file
+    await useGameStore.getState().fetchWorldState();
+
+    // Try to complete any active quests
+    for (const questId of Object.keys(quests)) {
+      const state = getQuestState(questId);
+      if (state === "active" || state === "available") {
+        tryCompleteQuest(questId);
+      }
+    }
+  });
 }

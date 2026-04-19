@@ -1,16 +1,19 @@
-import charterData from "../../data/areas/village-charter.json";
-import { getForgePipeline } from "./crafting";
+import { useGameStore } from "../../store/game-store";
 
 type QuestCheck = () => boolean;
 
 const checks: Record<string, QuestCheck> = {
-  "charter-restored": () => {
-    const keys = Object.keys(charterData);
-    return keys.length > 0 && "name" in charterData;
+  "town-hall-exists": () => {
+    const { worldState } = useGameStore.getState();
+    return worldState.buildings["town-hall"]?.exists ?? false;
   },
-  "forge-prep-restored": () => {
-    const pipeline = getForgePipeline();
-    return pipeline.some((step) => step.name === "prepare");
+  "forge-exists": () => {
+    const { worldState } = useGameStore.getState();
+    return worldState.buildings["forge"]?.exists ?? false;
+  },
+  "library-exists": () => {
+    const { worldState } = useGameStore.getState();
+    return worldState.buildings["library"]?.exists ?? false;
   },
 };
 

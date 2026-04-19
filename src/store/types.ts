@@ -1,4 +1,4 @@
-export type NPCState = "glitched" | "normal" | "healed";
+export type NPCState = "waiting" | "fulfilled";
 export type QuestState = "locked" | "available" | "active" | "completed";
 
 export interface DialogueLine {
@@ -20,14 +20,13 @@ export interface NPCData {
     quirk: string;
   };
   dialogue: {
-    glitched: DialogueLine[];
-    questGiving: DialogueLine[];
-    healed: DialogueLine[];
+    intro: DialogueLine[];
+    reminder: DialogueLine[];
+    fulfilled: DialogueLine[];
   };
   sprite: {
-    idle: string;
-    glitched: string;
-    healed: string;
+    waiting: string;
+    fulfilled: string;
   };
   questId: string | null;
   _creatorNote: string;
@@ -39,6 +38,13 @@ export interface HealMoment {
   audio: string;
   npcReaction: DialogueLine[];
   worldChange: string;
+}
+
+export interface QuestHudHints {
+  objective: string;
+  instruction: string;
+  detail: string;
+  copyable: string;
 }
 
 export interface QuestData {
@@ -53,6 +59,7 @@ export interface QuestData {
     type: string;
     condition: string;
   };
+  hudHints?: QuestHudHints;
   healMoment: HealMoment;
   rewards: {
     unlocksArea?: string;

@@ -4,7 +4,7 @@
   "role": "Village Blacksmith",
   "area": "village-square",
   "position": { "x": 180, "y": 280 },
-  "state": "glitched",
+  "state": "waiting",
   "catchphrase": "The iron remembers, even when I don't.",
   "personality": {
     "trait": "Patient, methodical, frustrated by sudden incompetence",
@@ -12,25 +12,24 @@
     "quirk": "Taps hammer rhythmically but skips a beat"
   },
   "dialogue": {
-    "glitched": [
+    "intro": [
       { "speaker": "Harlan", "text": "I'd offer you something freshly forged, but..." },
       { "speaker": "Harlan", "text": "My hands know the motions. Heat, fold, strike." },
-      { "speaker": "Harlan", "text": "But I keep skipping the first part. The preparation." },
-      { "speaker": "Harlan", "text": "It's like that step just vanished from my mind." }
+      { "speaker": "Harlan", "text": "But I've got no forge to work with. Just an empty lot." },
+      { "speaker": "Harlan", "text": "A blacksmith without a forge. What a sorry sight." }
     ],
-    "questGiving": [
-      { "speaker": "Harlan", "text": "You seem like someone who notices things others miss." },
+    "reminder": [
+      { "speaker": "Harlan", "text": "Still no forge. I keep coming back to this spot though." },
       { "speaker": "Harlan", "text": "My work used to flow — preparation, then the craft." },
-      { "speaker": "Harlan", "text": "Now the preparation vanishes. Like it was never there." },
-      { "speaker": "Harlan", "text": "Could you look at the forge? Something in the sequence broke." }
+      { "speaker": "Harlan", "text": "Can't do any of that without a proper workshop." }
     ],
-    "healed": [
+    "fulfilled": [
       { "speaker": "Harlan", "text": "I can feel it. The rhythm — it's back." },
-      { "speaker": "Harlan", "text": "Prepare, then forge. How did I ever forget that?" },
+      { "speaker": "Harlan", "text": "A real forge. Now I can get to work." },
       { "speaker": "Harlan", "text": "Thank you, friend. My hands remember again." }
     ]
   },
-  "sprite": { "idle": "sprite-blacksmith-idle", "glitched": "sprite-blacksmith-glitched", "healed": "sprite-blacksmith-healed" },
+  "sprite": { "waiting": "npc-blacksmith", "fulfilled": "npc-blacksmith-alt" },
   "questId": "forgotten-prep",
-  "_creatorNote": "Teaches hooks (pre-command hooks)."
+  "_creatorNote": "Teaches hooks (pre-command hooks). Not loaded in MVP — waiting for Phase 2."
 }

@@ -2,10 +2,9 @@ import type { KAPLAYCtx } from "kaplay";
 import { spawnPlayer } from "../entities/player";
 import { spawnNPC } from "../entities/npc";
 import { getNPCsForArea } from "../loader";
-import { addGlitchOverlay } from "../systems/glitch";
-import { tryCompleteQuest } from "../systems/quest";
+import { initBuildingSpawner } from "../systems/building-spawner";
+import { startQuestWatcher } from "../systems/quest";
 import { useGameStore } from "../../store/game-store";
-import type { NPCData } from "../../store/types";
 
 const TILE = 16;
 const COLS = 50;
@@ -98,143 +97,76 @@ function drawTerrain(k: KAPLAYCtx) {
     }
   }
 
-  // ── Scatter detail sprites on grass (sparse, organic placement) ──
-  const detailScale = 0.19; // ~256px → ~49px
-  for (let row = 2; row < ROWS - 2; row += 2) {
-    const isDirtRow = row >= PATH_ROW_START - 1 && row <= PATH_ROW_END + 1;
-    if (isDirtRow) continue;
+  // ── Scatter detail sprites on grass (organic, natural placement) ──
+  const pathTop = (PATH_ROW_START - 1) * TILE;
+  const pathBot = (PATH_ROW_END + 2) * TILE;
 
-    for (let col = 2; col < COLS - 2; col += 2) {
-      const h = tileHash(col, row, 1);
+  function isOnGrass(x: number, y: number): boolean {
+    if (x < TILE * 2 || x > worldW - TILE * 2) return false;
+    if (y < TILE * 2 || y > worldH - TILE * 2) return false;
+    if (y > pathTop && y < pathBot) return false;
+    return true;
+  }
 
-      // ~8% flower patches
-      if (h % 13 === 3) {
-        k.add([
-          k.sprite("flowers-pink"),
-          k.pos(col * TILE + (h % 8), row * TILE + (h % 6)),
-          k.anchor("center"),
-          k.scale(detailScale),
-          k.opacity(0.85),
-          k.z(1),
-        ]);
-      }
-
-      // ~6% tall grass tufts
-      if (h % 17 === 7) {
-        k.add([
-          k.sprite("tall-grass"),
-          k.pos(col * TILE + (h % 10), row * TILE + (h % 8)),
-          k.anchor("center"),
-          k.scale(detailScale * 0.9),
-          k.opacity(0.8),
-          k.z(1),
-        ]);
-      }
-
-      // ~3% mushroom clusters
-      if (h % 35 === 11) {
-        k.add([
-          k.sprite("mushrooms"),
-          k.pos(col * TILE + (h % 6), row * TILE + (h % 5)),
-          k.anchor("center"),
-          k.scale(detailScale * 0.85),
-          k.opacity(0.9),
-          k.z(1),
-        ]);
+  // Seeded random using the tile hash for determinism
+  function scatterPositions(count: number, seed: number): { x: number; y: number }[] {
+    const positions: { x: number; y: number }[] = [];
+    for (let i = 0; i < count * 3; i++) {
+      const h1 = tileHash(i, seed, 42);
+      const h2 = tileHash(seed, i, 99);
+      const x = (h1 / 1000) * worldW;
+      const y = (h2 / 1000) * worldH;
+      if (isOnGrass(x, y)) {
+        positions.push({ x, y });
+        if (positions.length >= count) break;
       }
     }
+    return positions;
+  }
+
+  // Flowers — small, scattered clusters
+  for (const pos of scatterPositions(18, 1)) {
+    const h = tileHash(Math.floor(pos.x), Math.floor(pos.y), 3);
+    const scale = 0.06 + (h % 5) * 0.01; // 0.06-0.10 (15-26px, roughly 1-2 tiles)
+    k.add([
+      k.sprite("flowers-pink"),
+      k.pos(pos.x, pos.y),
+      k.anchor("center"),
+      k.scale(scale),
+      k.opacity(0.8 + (h % 3) * 0.05),
+      k.z(1),
+    ]);
+  }
+
+  // Tall grass tufts — slightly more common
+  for (const pos of scatterPositions(14, 2)) {
+    const h = tileHash(Math.floor(pos.x), Math.floor(pos.y), 7);
+    const scale = 0.05 + (h % 4) * 0.01; // 0.05-0.08
+    k.add([
+      k.sprite("tall-grass"),
+      k.pos(pos.x, pos.y),
+      k.anchor("center"),
+      k.scale(scale),
+      k.opacity(0.7 + (h % 4) * 0.05),
+      k.z(1),
+    ]);
+  }
+
+  // Mushroom clusters — rare, small
+  for (const pos of scatterPositions(6, 3)) {
+    const h = tileHash(Math.floor(pos.x), Math.floor(pos.y), 11);
+    const scale = 0.05 + (h % 3) * 0.008; // 0.05-0.066
+    k.add([
+      k.sprite("mushrooms"),
+      k.pos(pos.x, pos.y),
+      k.anchor("center"),
+      k.scale(scale),
+      k.opacity(0.85),
+      k.z(1),
+    ]);
   }
 }
 
-function addBuildings(k: KAPLAYCtx) {
-  // Front-facing pixel art PNGs: forge 437x636, townhall 415x792, library 407x612
-  // Scale ~0.23 to get ~100px wide buildings
-  const buildingScale = 0.23;
-
-  // ── FORGE ── (535x844 → ~123x194 at 0.23)
-  const forgeX = 50;
-  const forgeY = 10;
-  const forgeW = 123;
-  const forgeH = 194;
-  k.add([
-    k.sprite("building-forge"),
-    k.pos(forgeX, forgeY),
-    k.scale(buildingScale),
-    k.z(4),
-  ]);
-  k.add([
-    k.rect(forgeW, forgeH * 0.45),
-    k.pos(forgeX, forgeY + forgeH * 0.55),
-    k.area(),
-    k.body({ isStatic: true }),
-    k.opacity(0),
-    k.z(4),
-    "Forge",
-  ]);
-  k.add([
-    k.text("Forge", { size: 8, font: "monospace" }),
-    k.pos(forgeX + forgeW / 2, forgeY - 6),
-    k.anchor("center"),
-    k.color(k.Color.fromHex("#FFF8E7")),
-    k.z(6),
-  ]);
-
-  // ── TOWN HALL ── (415x792 → ~95x182 at 0.23)
-  const hallX = 310;
-  const hallY = 10;
-  const hallW = 95;
-  const hallH = 182;
-  k.add([
-    k.sprite("building-townhall"),
-    k.pos(hallX, hallY),
-    k.scale(buildingScale),
-    k.z(4),
-  ]);
-  k.add([
-    k.rect(hallW, hallH * 0.45),
-    k.pos(hallX, hallY + hallH * 0.5),
-    k.area(),
-    k.body({ isStatic: true }),
-    k.opacity(0),
-    k.z(4),
-    "Town Hall",
-  ]);
-  k.add([
-    k.text("Town Hall", { size: 8, font: "monospace" }),
-    k.pos(hallX + hallW / 2, hallY - 6),
-    k.anchor("center"),
-    k.color(k.Color.fromHex("#FFF8E7")),
-    k.z(6),
-  ]);
-
-  // ── LIBRARY ── (407x612 → ~94x141 at 0.23)
-  const libX = 560;
-  const libY = 50;
-  const libW = 94;
-  const libH = 141;
-  k.add([
-    k.sprite("building-library"),
-    k.pos(libX, libY),
-    k.scale(buildingScale),
-    k.z(4),
-  ]);
-  k.add([
-    k.rect(libW, libH * 0.45),
-    k.pos(libX, libY + libH * 0.55),
-    k.area(),
-    k.body({ isStatic: true }),
-    k.opacity(0),
-    k.z(4),
-    "Library",
-  ]);
-  k.add([
-    k.text("Library", { size: 8, font: "monospace" }),
-    k.pos(libX + libW / 2, libY - 6),
-    k.anchor("center"),
-    k.color(k.Color.fromHex("#FFF8E7")),
-    k.z(6),
-  ]);
-}
 
 function addEnvironment(k: KAPLAYCtx) {
   const worldW = COLS * TILE;
@@ -439,60 +371,6 @@ function addAtmosphere(k: KAPLAYCtx) {
   ]);
 }
 
-// Agent NPC data - maps agent files to in-world characters
-const AGENT_NPC_CONFIG: Record<string, { name: string; role: string; position: { x: number; y: number }; dialogue: Array<{ speaker: string; text: string }> }> = {
-  orchestrator: {
-    name: "The Orchestrator",
-    role: "Village Leader",
-    position: { x: 350, y: 240 },
-    dialogue: [
-      { speaker: "The Orchestrator", text: "I coordinate the team. When there's a big task, I break it down and assign pieces to each specialist." },
-      { speaker: "The Orchestrator", text: "One thing at a time — that's how we avoid chaos. I watch the polish loop: critique, fix, verify, repeat." },
-      { speaker: "The Orchestrator", text: "In Claude Code, I'm an agent defined in .claude/agents/. Press K to see all the skills we use!" },
-    ],
-  },
-  critic: {
-    name: "The Critic",
-    role: "Quality Inspector",
-    position: { x: 150, y: 320 },
-    dialogue: [
-      { speaker: "The Critic", text: "My job is to find every flaw. I test everything — visuals, interactions, rough edges." },
-      { speaker: "The Critic", text: "Nothing ships until I say it's polished. Would this embarrass me if I showed it to someone?" },
-      { speaker: "The Critic", text: "I'm defined in .claude/agents/critic.md. Each agent has a specific focus and set of tools." },
-    ],
-  },
-  "visual-critic": {
-    name: "The Visual Critic",
-    role: "Art Inspector",
-    position: { x: 600, y: 200 },
-    dialogue: [
-      { speaker: "The Visual Critic", text: "I judge with my eyes. Every pixel matters. Stardew Valley quality or it goes back to the forge." },
-      { speaker: "The Visual Critic", text: "Scale consistency, color cohesion, sprite crispness — these are what I watch for." },
-      { speaker: "The Visual Critic", text: "Agents can be specialized for visual work, code review, testing — whatever you need." },
-    ],
-  },
-  implementer: {
-    name: "The Implementer",
-    role: "Blacksmith",
-    position: { x: 90, y: 180 },
-    dialogue: [
-      { speaker: "The Implementer", text: "Point me at a problem and I'll fix it. Read the issue, read the code, minimal change that solves it." },
-      { speaker: "The Implementer", text: "No refactoring for fun. No extra features. Just the fix, clean and targeted." },
-      { speaker: "The Implementer", text: "Each agent in .claude/agents/ has rules about what they should and shouldn't do." },
-    ],
-  },
-  "knowledge-keeper": {
-    name: "Knowledge Keeper",
-    role: "Librarian",
-    position: { x: 620, y: 160 },
-    dialogue: [
-      { speaker: "Knowledge Keeper", text: "I maintain the village records. When someone learns something new, I write it down." },
-      { speaker: "Knowledge Keeper", text: "Skills, patterns, lessons — all captured in .claude/skills/ so we never forget." },
-      { speaker: "Knowledge Keeper", text: "Press K to open the Skill Bookshelf and see everything we've learned!" },
-    ],
-  },
-};
-
 export function worldScene(k: KAPLAYCtx) {
   const store = useGameStore.getState();
   store.setInWorld(true);
@@ -500,10 +378,16 @@ export function worldScene(k: KAPLAYCtx) {
 
   // --- Terrain & environment ---
   drawTerrain(k);
-  addBuildings(k);
   addEnvironment(k);
   addWorldBounds(k);
   addAtmosphere(k);
+
+  // --- Dynamic buildings (driven by file watcher) ---
+  initBuildingSpawner(k);
+
+  // --- Fetch initial world state & start quest watcher ---
+  store.fetchWorldState();
+  startQuestWatcher();
 
   // --- Player ---
   const { obj: playerObj, setInteracting } = spawnPlayer(
@@ -523,16 +407,6 @@ export function worldScene(k: KAPLAYCtx) {
     const liveState = store.npcStates[npcData.id] ?? npcData.state;
     return spawnNPC(k, { ...npcData, state: liveState });
   });
-
-  // --- Glitch overlays ---
-  for (let i = 0; i < areaNPCs.length; i++) {
-    const npcData = areaNPCs[i];
-    const liveState = store.npcStates[npcData.id] ?? npcData.state;
-    if (liveState === "glitched") {
-      const obj = npcObjs[i];
-      addGlitchOverlay(k, obj.pos.x - 60, obj.pos.y - 60, 120, 120);
-    }
-  }
 
   // --- Camera (clamped to world bounds) ---
   const worldW = COLS * TILE;
@@ -559,7 +433,7 @@ export function worldScene(k: KAPLAYCtx) {
     if (dialogueCooldown > 0) dialogueCooldown -= k.dt();
   });
 
-  k.onButtonPress("interact", () => {
+  k.onButtonPress("interact", async () => {
     const currentStore = useGameStore.getState();
 
     if (currentStore.isDialogueOpen) {
@@ -577,38 +451,36 @@ export function worldScene(k: KAPLAYCtx) {
     const npcData = areaNPCs.find((n) => n.id === npcId);
     if (!npcData) return;
 
-    const freshStore = useGameStore.getState();
-    const npcState = freshStore.npcStates[npcId] ?? npcData.state;
-
     setInteracting(true);
 
-    if (npcState === "healed") {
-      freshStore.openDialogue(npcData.dialogue.healed);
-      return;
-    }
+    // Refresh world state before selecting dialogue
+    await useGameStore.getState().fetchWorldState();
+    const freshStore = useGameStore.getState();
+    const { worldState } = freshStore;
 
-    if (npcState === "glitched" && npcData.questId) {
-      const questState = freshStore.questStates[npcData.questId] ?? "locked";
+    // World-state-aware dialogue selection
+    const townHallExists = worldState.buildings["town-hall"]?.exists ?? false;
 
-      if (questState === "active" || questState === "available") {
-        const passed = tryCompleteQuest(npcData.questId);
-        if (passed) {
-          freshStore.openDialogue(npcData.dialogue.healed);
-        } else {
-          freshStore.openDialogue([
-            { speaker: npcData.name, text: "Something still feels... off. Like a variable that never got set." },
-            ...npcData.dialogue.questGiving,
-          ]);
+    if (townHallExists) {
+      // Town hall is built — show fulfilled dialogue
+      freshStore.openDialogue(npcData.dialogue.fulfilled);
+    } else {
+      // No town hall — check if player has talked before
+      const questState = npcData.questId
+        ? freshStore.questStates[npcData.questId] ?? "locked"
+        : "locked";
+
+      if (questState === "active") {
+        // Already talked, give reminder
+        freshStore.openDialogue(npcData.dialogue.reminder);
+      } else {
+        // First encounter — set quest active and give intro dialogue
+        if (npcData.questId) {
+          freshStore.setQuestState(npcData.questId, "active");
         }
-        return;
+        freshStore.openDialogue(npcData.dialogue.intro);
       }
-
-      freshStore.setQuestState(npcData.questId, "active");
-      freshStore.openDialogue(npcData.dialogue.glitched);
-      return;
     }
-
-    freshStore.openDialogue(npcData.dialogue.glitched);
   });
 
   // --- Bookshelf toggle (K key) ---
@@ -629,50 +501,6 @@ export function worldScene(k: KAPLAYCtx) {
     }
     if (!state.isBookshelfOpen && prev.isBookshelfOpen) {
       setInteracting(false);
-    }
-  });
-
-  // --- Agent NPCs (from .claude/agents/) ---
-  // Fetch agents data then spawn them
-  store.fetchAgents().then(() => {
-    const agentData = useGameStore.getState().agents;
-    for (const agent of agentData) {
-      const filename = agent.path.split("/").pop()?.replace(".md", "") || "";
-      const config = AGENT_NPC_CONFIG[filename];
-      if (!config) continue;
-
-      const agentNPCData: NPCData = {
-        id: `agent-${filename}`,
-        name: config.name,
-        role: config.role,
-        area: currentArea,
-        position: config.position,
-        state: "healed",
-        catchphrase: agent.description.slice(0, 60),
-        personality: {
-          trait: config.role,
-          speechPattern: "professional",
-          quirk: "always focused",
-        },
-        dialogue: {
-          glitched: config.dialogue,
-          questGiving: config.dialogue,
-          healed: config.dialogue,
-        },
-        sprite: {
-          idle: "npc-mayor",
-          glitched: "npc-mayor",
-          healed: "npc-mayor-alt",
-        },
-        questId: null,
-        _creatorNote: `Agent NPC: ${filename}`,
-      };
-
-      const agentNpcObj = spawnNPC(k, agentNPCData);
-
-      // Add agent NPC to interaction handling
-      npcObjs.push(agentNpcObj);
-      areaNPCs.push(agentNPCData);
     }
   });
 

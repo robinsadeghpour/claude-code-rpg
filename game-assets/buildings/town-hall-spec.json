@@ -1,0 +1,38 @@
+{
+  "building_id": "town-hall",
+  "display_name": "Town Hall",
+  "style_lock": {
+    "project_style": "cozy pixel art rpg",
+    "perspective": "front-facing with slight top-down roof visibility",
+    "palette_mode": "brand-and-tone healthy palette",
+    "render_constraints": [
+      "pixel art only",
+      "transparent background",
+      "crisp edges",
+      "no anti-aliased blur"
+    ]
+  },
+  "architecture": {
+    "silhouette": "large prominent civic building, tallest in the village",
+    "materials": [
+      "warm cream stone walls",
+      "dark wooden timber frame accents",
+      "steep thatched or slate roof in sage green",
+      "arched wooden double doors"
+    ],
+    "must_keep_details": [
+      "large arched center double-door entrance",
+      "small bell tower or clock on roof peak",
+      "two symmetrical front windows with warm light glow",
+      "front steps leading to entrance",
+      "small decorative banner or crest above door"
+    ],
+    "color_notes": [
+      "warm cream #FFF8E7 walls",
+      "soft sage #C5D5A5 roof tiles",
+      "peach #FFB088 and sunbeam yellow #FFE066 window glow accents",
+      "warm brown #8B6549 timber framing",
+      "terracotta #C67B5C door and step details"
+    ]
+  }
+}

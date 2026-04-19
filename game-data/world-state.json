@@ -1,0 +1,18 @@
+{
+  "buildings": {
+    "town-hall": {
+      "exists": true,
+      "builtAt": "2026-04-19T15:59:40.875Z"
+    },
+    "forge": {
+      "exists": false,
+      "builtAt": null
+    },
+    "library": {
+      "exists": false,
+      "builtAt": null
+    }
+  },
+  "questProgress": {},
+  "lastEvent": "town-hall-built"
+}

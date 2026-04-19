@@ -4,7 +4,7 @@
   "role": "Village Mayor",
   "area": "village-square",
   "position": { "x": 420, "y": 280 },
-  "state": "glitched",
+  "state": "waiting",
   "catchphrase": "The charter... what does it say again?",
   "personality": {
     "trait": "Earnest but increasingly confused",
@@ -12,26 +12,26 @@
     "quirk": "Keeps patting his coat pockets searching for something"
   },
   "dialogue": {
-    "glitched": [
+    "intro": [
       { "speaker": "Bramble", "text": "Ah, welcome to our village! It's called... it's..." },
       { "speaker": "Bramble", "text": "I'm the mayor, I should know these things. But the charter..." },
       { "speaker": "Bramble", "text": "It's blank. Every page. The words just... left." },
       { "speaker": "Bramble", "text": "Without the charter, nobody knows the rules anymore." },
       { "speaker": "Bramble", "text": "Could you take a look? Maybe you can see what I can't." }
     ],
-    "questGiving": [
+    "reminder": [
       { "speaker": "Bramble", "text": "The village charter tells everyone how things work." },
       { "speaker": "Bramble", "text": "It should list our name, our rules, our way of life." },
       { "speaker": "Bramble", "text": "But it's completely empty. Like someone erased it all." },
       { "speaker": "Bramble", "text": "If you could restore it, everything might make sense again." }
     ],
-    "healed": [
+    "fulfilled": [
       { "speaker": "Bramble", "text": "I can read it again! Every word, clear as day." },
       { "speaker": "Bramble", "text": "Welcome to Bughollow! ...That's our name. I remember now." },
       { "speaker": "Bramble", "text": "Thank you, friend. A village without its charter is lost." }
     ]
   },
-  "sprite": { "idle": "sprite-mayor-idle", "glitched": "sprite-mayor-glitched", "healed": "sprite-mayor-healed" },
+  "sprite": { "waiting": "npc-mayor", "fulfilled": "npc-mayor-alt" },
   "questId": "missing-charter",
-  "_creatorNote": "Teaches CLAUDE.md — the foundational project document."
+  "_creatorNote": "Teaches CLAUDE.md — the foundational project document. Old NPC from v2 design, replaced by mayor-bramble in MVP."
 }

@@ -1,0 +1,40 @@
+{
+  "id": "mayor-bramble",
+  "name": "Mayor Bramble",
+  "role": "Town Administrator",
+  "area": "village-square",
+  "position": { "x": 350, "y": 240 },
+  "state": "waiting",
+  "catchphrase": "We need a proper town hall...",
+  "personality": {
+    "trait": "Warm, earnest, slightly nervous",
+    "speechPattern": "Speaks plainly, occasionally philosophical",
+    "quirk": "Looks around at the empty village with worried eyes"
+  },
+  "dialogue": {
+    "intro": [
+      { "speaker": "Mayor Bramble", "text": "Oh, hello. Another soul wandering through. At least I'm not completely alone." },
+      { "speaker": "Mayor Bramble", "text": "Where is everybody? There's supposed to be a village here. Houses, a square, people." },
+      { "speaker": "Mayor Bramble", "text": "I'm the mayor, apparently. But there's no town hall, no records, nothing to actually... do." },
+      { "speaker": "Mayor Bramble", "text": "I've got all these plans in my head and nowhere to put them. Can't run a village from an empty field." },
+      { "speaker": "Mayor Bramble", "text": "A town hall. That's what we need first. Everything starts with a proper town hall." }
+    ],
+    "reminder": [
+      { "speaker": "Mayor Bramble", "text": "I keep pacing around this spot. This is where the town hall should be, I can feel it." },
+      { "speaker": "Mayor Bramble", "text": "If we had a town hall, I could finally get to work. Post notices, hold meetings, make this place real." },
+      { "speaker": "Mayor Bramble", "text": "I don't know how to build one myself. But something tells me you might." }
+    ],
+    "fulfilled": [
+      { "speaker": "Mayor Bramble", "text": "A town hall. A real, actual town hall. I almost can't believe it." },
+      { "speaker": "Mayor Bramble", "text": "Now I can get to work. There's so much to organize." },
+      { "speaker": "Mayor Bramble", "text": "You know, Harlan — the blacksmith — he's been standing by an empty lot for days. Keeps muttering about needing a forge." },
+      { "speaker": "Mayor Bramble", "text": "I bet he'd be thrilled if someone could help him out too." }
+    ]
+  },
+  "sprite": {
+    "waiting": "npc-mayor",
+    "fulfilled": "npc-mayor-alt"
+  },
+  "questId": "build-town-hall",
+  "_creatorNote": "First NPC the player meets. Teaches using Claude Code skills. The quest HUD bridges the gap — Mayor stays in-world, the journal tells the player what to type in their terminal."
+}

@@ -1,0 +1,29 @@
+{
+  "town-hall": {
+    "position": [310, 10],
+    "spriteKey": "building-townhall",
+    "assetFile": "town-hall.png",
+    "scale": 0.23,
+    "label": "Town Hall",
+    "interactable": true,
+    "unlocks": ["blacksmith-quest"]
+  },
+  "forge": {
+    "position": [50, 10],
+    "spriteKey": "building-forge",
+    "assetFile": "forge.png",
+    "scale": 0.23,
+    "label": "The Forge",
+    "interactable": true,
+    "unlocks": ["library-quest"]
+  },
+  "library": {
+    "position": [560, 50],
+    "spriteKey": "building-library",
+    "assetFile": "library.png",
+    "scale": 0.23,
+    "label": "Library",
+    "interactable": true,
+    "unlocks": []
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "output": {
+    "width": 512,
+    "height": 768
+  },
+  "variants": [
+    {
+      "id": "primary",
+      "filename_suffix": "",
+      "prompt_modifier": "healthy village state, welcoming and clean, warm golden light from windows, banner fluttering gently"
+    },
+    {
+      "id": "glitched",
+      "filename_suffix": "-glitched",
+      "prompt_modifier": "same building geometry, but glitched state with subtle cyan-magenta corruption accents, flickering windows, banner torn"
+    },
+    {
+      "id": "healed",
+      "filename_suffix": "-healed",
+      "prompt_modifier": "same building geometry, healed state with warm restored colors, extra vibrant window glow, flowers on steps"
+    }
+  ]
+}

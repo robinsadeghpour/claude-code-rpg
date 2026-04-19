@@ -1,21 +1,27 @@
 import type { NPCData, QuestData } from "../store/types";
-import mayorData from "../data/npcs/npc-mayor.json";
-import blacksmithData from "../data/npcs/npc-blacksmith.json";
-import missingCharterData from "../data/quests/quest-missing-charter.json";
-import forgottenPrepData from "../data/quests/quest-forgotten-prep.json";
+import mayorBrambleData from "../data/npcs/npc-mayor-bramble.json";
+import buildTownHallData from "../data/quests/quest-build-town-hall.json";
 
+// ── NPC registry ──
 export const npcs: Record<string, NPCData> = {
-  mayor: mayorData as unknown as NPCData,
-  blacksmith: blacksmithData as unknown as NPCData,
+  "mayor-bramble": mayorBrambleData as unknown as NPCData,
 };
 
+// ── Quest registry (single source of truth) ──
 export const quests: Record<string, QuestData> = {
-  "missing-charter": missingCharterData as unknown as QuestData,
-  "forgotten-prep": forgottenPrepData as unknown as QuestData,
+  "build-town-hall": buildTownHallData as unknown as QuestData,
 };
 
 export function getNPC(id: string): NPCData | undefined {
   return npcs[id];
+}
+
+export function getQuest(id: string): QuestData | undefined {
+  return quests[id];
+}
+
+export function getAllQuests(): QuestData[] {
+  return Object.values(quests);
 }
 
 export function getAllNPCs(): NPCData[] {

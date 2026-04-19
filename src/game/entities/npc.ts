@@ -4,24 +4,15 @@ import type { NPCData } from "../../store/types";
 const INTERACT_SCALE = 2.0;
 const NPC_SPRITE_SCALE = 0.13; // 440px content * 0.13 ≈ 57px tall
 
-function getNPCSpriteId(npcId: string): string {
-  switch (npcId) {
-    case "mayor": return "npc-mayor";
-    case "blacksmith": return "npc-blacksmith";
-    default: return "npc-mayor"; // fallback
-  }
-}
-
 export function spawnNPC(k: KAPLAYCtx, data: NPCData) {
-  const isGlitched = data.state === "glitched";
-  const isHealed = data.state === "healed";
+  const isFulfilled = data.state === "fulfilled";
 
   const cx = data.position.x;
   const cy = data.position.y;
 
-  const spriteId = isHealed
-    ? `${getNPCSpriteId(data.id)}-alt`
-    : getNPCSpriteId(data.id);
+  const spriteId = isFulfilled
+    ? data.sprite.fulfilled
+    : data.sprite.waiting;
 
   // NPC sprite
   const npcSprite = k.add([
@@ -99,8 +90,8 @@ export function spawnNPC(k: KAPLAYCtx, data: NPCData) {
     prompt.pos.y = promptBaseY + bobOffset;
   });
 
-  // ── Healed sparkle particles ──
-  if (isHealed) {
+  // ── Fulfilled sparkle particles ──
+  if (isFulfilled) {
     const sparkleOffsets = [
       { x: -10, y: -12 },
       { x: 9, y: -8 },
@@ -129,45 +120,6 @@ export function spawnNPC(k: KAPLAYCtx, data: NPCData) {
         }
       });
     }
-  }
-
-  // ── Glitch flicker effect ──
-  if (isGlitched) {
-    let glitchCooldown = 3 + k.rand(0, 3);
-    let glitchActive = false;
-    let glitchTimer = 0;
-
-    npcBody.onUpdate(() => {
-      glitchCooldown -= k.dt();
-
-      if (!glitchActive && glitchCooldown <= 0) {
-        glitchActive = true;
-        glitchTimer = 0;
-        glitchCooldown = 3 + k.rand(0, 3);
-      }
-
-      if (glitchActive) {
-        glitchTimer += k.dt();
-        const useGlitch =
-          glitchTimer < 0.08 ||
-          (glitchTimer >= 0.14 && glitchTimer < 0.18);
-
-        // Apply purple tint and jitter during glitch
-        if (useGlitch) {
-          npcSprite.color = k.Color.fromHex("#9B30FF");
-          npcSprite.pos.x = cx + k.rand(-2, 2);
-        } else {
-          npcSprite.color = k.Color.fromHex("#FFFFFF");
-          npcSprite.pos.x = cx;
-        }
-
-        if (glitchTimer >= 0.18) {
-          npcSprite.color = k.Color.fromHex("#FFFFFF");
-          npcSprite.pos.x = cx;
-          glitchActive = false;
-        }
-      }
-    });
   }
 
   // Show/hide [E] prompt

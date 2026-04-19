@@ -46,6 +46,9 @@ export function loadAssets(k: KAPLAYCtx) {
   k.loadSprite("building-townhall", "/assets/sprites/building-townhall.png");
   k.loadSprite("building-library", "/assets/sprites/building-library.png");
 
+  // ── Menu background ──
+  k.loadSprite("menu-background", "/assets/sprites/menu-background.png");
+
   // ── Props (individual sprites) ──
   k.loadSprite("oak-tree", "/assets/sprites/props/oak-tree.png");
   k.loadSprite("pine-tree", "/assets/sprites/props/pine-tree.png");

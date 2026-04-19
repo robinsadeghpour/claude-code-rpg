@@ -31,43 +31,42 @@ Save to `src/data/npcs/npc-{id}.json`. Follow this exact schema:
   "name": "Harlan",
   "role": "Village Blacksmith",
   "area": "village-square",
-  "position": { "x": 12, "y": 8 },
-  "state": "glitched",
+  "position": { "x": 180, "y": 280 },
+  "state": "waiting",
   "catchphrase": "The iron remembers, even when I don't.",
 
   "personality": {
-    "trait": "Patient, methodical, deeply frustrated by his sudden incompetence",
-    "speechPattern": "Speaks in measured sentences. Pauses mid-thought. Trails off when the glitch hits.",
-    "quirk": "Taps his hammer on the anvil rhythmically while talking, but the rhythm skips a beat every few taps"
+    "trait": "Patient, methodical, frustrated by having no workshop",
+    "speechPattern": "Speaks in measured sentences. Pauses mid-thought.",
+    "quirk": "Taps his hammer on his palm rhythmically while talking"
   },
 
   "dialogue": {
-    "glitched": [
-      { "speaker": "Harlan", "text": "Ah, hello there. I'd offer you something freshly forged, but..." },
-      { "speaker": "Harlan", "text": "My hands know the motions. Heat, fold, strike. But somewhere between fold and strike, I just..." },
-      { "speaker": "Harlan", "text": "...forget what I was making. Every single time." }
+    "intro": [
+      { "speaker": "Harlan", "text": "I'd offer you something freshly forged, but..." },
+      { "speaker": "Harlan", "text": "My hands know the motions. Heat, fold, strike." },
+      { "speaker": "Harlan", "text": "But I've got no forge to work with. Just an empty lot." },
+      { "speaker": "Harlan", "text": "A blacksmith without a forge. What a sorry sight." }
     ],
-    "questGiving": [
-      { "speaker": "Harlan", "text": "You seem like someone who notices things others miss." },
-      { "speaker": "Harlan", "text": "There's a pattern to my work. It used to flow — preparation, then the craft, then the finishing touch." },
-      { "speaker": "Harlan", "text": "Now the preparation step just... vanishes. Like it was never there." },
-      { "speaker": "Harlan", "text": "Could you take a look? The old ritual board behind my shop might have answers." }
+    "reminder": [
+      { "speaker": "Harlan", "text": "Still no forge. I keep coming back to this spot though." },
+      { "speaker": "Harlan", "text": "My work used to flow — preparation, then the craft." },
+      { "speaker": "Harlan", "text": "Can't do any of that without a proper workshop." }
     ],
-    "healed": [
-      { "speaker": "Harlan", "text": "The rhythm's back. Heat, fold, strike — all of it, in order, every time." },
+    "fulfilled": [
+      { "speaker": "Harlan", "text": "A real forge. Now I can get to work." },
       { "speaker": "Harlan", "text": "I don't know what you did, but my hands remember again. Thank you, friend." }
     ]
   },
 
   "sprite": {
-    "idle": "sprite-blacksmith-idle",
-    "glitched": "sprite-blacksmith-glitched",
-    "healed": "sprite-blacksmith-healed"
+    "waiting": "npc-blacksmith",
+    "fulfilled": "npc-blacksmith-alt"
   },
 
-  "questId": "quest-forgotten-pattern",
+  "questId": "forgotten-prep",
 
-  "_creatorNote": "Teaches hooks (pre-command hooks). Harlan's 'preparation ritual' is the metaphor for a hook that runs before the main action. His glitch is that the pre-hook is missing — so the preparation step gets skipped, and his forging fails. The terminal challenge has the player restore the preparation ritual to the sequence."
+  "_creatorNote": "Teaches hooks (pre-command hooks). Harlan needs a forge built before he can work. His quest later teaches that preparation steps (hooks) must run before the main action."
 }
 ```
 
@@ -82,22 +81,40 @@ SPRITE SPEC: blacksmith
 - Palette: terracotta skin, warm brown leather apron, charcoal pants, peach shirt underneath
 - Props: hammer in right hand, small anvil nearby
 - Idle pose: standing, slight lean forward, hammer resting at side
-- Glitch variant: same pose but every 3rd frame the hammer teleports to wrong hand, apron flickers between brown and purple
-- Healed variant: same as idle but subtle warm glow, relaxed posture
+- Fulfilled variant: same as idle but subtle warm glow, relaxed posture
 - Style: Stardew Valley villager proportions — large head, small body, expressive eyes
 ```
+
+## NPC States
+
+NPCs have two states that reflect the "build up the village" narrative:
+
+| State | Meaning |
+|-------|---------|
+| `waiting` | NPC is waiting for something to be built or a quest to be completed |
+| `fulfilled` | Quest is done, NPC is grateful and the village has grown |
+
+There is no "glitched" state — the village isn't broken, it's empty. NPCs are lonely, wanting, hopeful — not corrupted.
+
+## Dialogue Keys
+
+| Key | When shown | Tone |
+|-----|-----------|------|
+| `intro` | First time the player talks to this NPC | Introduce themselves, express what they need |
+| `reminder` | Player returns without completing the quest | Gently remind what they're waiting for |
+| `fulfilled` | Quest is complete | Genuine warmth, gratitude, point to next need |
 
 ## NPC Design Rules
 
 ### Personality
 - Every NPC needs a distinct speech pattern that's recognizable within 2 lines of dialogue
-- Glitched dialogue should feel *off* but not broken — the NPC is struggling, not corrupted
-- Healed dialogue should feel genuinely warm — not performative gratitude
+- Waiting dialogue should feel wistful or hopeful — the NPC wants something, not something is wrong with them
+- Fulfilled dialogue should feel genuinely warm — not performative gratitude
 - Keep dialogue lines under 80 characters where possible (fits the dialogue box cleanly)
-- Aim for 3-4 lines per dialogue state (glitched, questGiving, healed)
+- Aim for 3-4 lines per dialogue state (intro, reminder, fulfilled)
 
 ### Concept Mapping
-- The NPC's glitch symptom must be a natural metaphor for the Claude Code concept
+- The NPC's need must be a natural metaphor for the Claude Code concept
 - The metaphor should be intuitive enough that after playing, someone could say "oh, that's like hooks" — but during play, it just feels like a story
 - Reference the concept-to-metaphor table in brand-and-tone:
   - Skills → recipes, scrolls, craft patterns
@@ -109,9 +126,9 @@ SPRITE SPEC: blacksmith
   - CLAUDE.md → the village charter
 
 ### What Makes a Good NPC
-- Their problem is relatable on a human level (forgetting things, losing track, feeling stuck)
-- Their personality exists independent of their glitch — they have hobbies, opinions, history
-- They react to being healed with genuine surprise, not scripted thanks
+- Their need is relatable on a human level (wanting a workspace, feeling lonely, needing tools)
+- Their personality exists independent of their quest — they have hobbies, opinions, history
+- They react to fulfillment with genuine surprise, not scripted thanks
 - They feel like someone you'd want to talk to again even after the quest is done
 
 ### Naming
@@ -123,9 +140,9 @@ SPRITE SPEC: blacksmith
 
 Before finalizing, verify:
 - [ ] No code terminology anywhere in dialogue (no "debug," "function," "error," "variable")
-- [ ] Glitch symptom clearly maps to a Claude Code concept (check _creatorNote)
+- [ ] NPC need clearly maps to a Claude Code concept (check _creatorNote)
 - [ ] Speech pattern is distinct and consistent across all dialogue states
 - [ ] Dialogue lines fit under 80 characters
-- [ ] Sprite spec includes idle, glitched, and healed variants
+- [ ] Sprite spec includes waiting and fulfilled variants
 - [ ] Position coordinates are reasonable for the specified area
 - [ ] JSON is valid and matches the schema exactly

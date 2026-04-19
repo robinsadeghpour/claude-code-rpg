@@ -17,11 +17,21 @@ export interface AgentEntry {
   path: string;
 }
 
+export interface WorldState {
+  buildings: Record<string, { exists: boolean; builtAt: string | null }>;
+  questProgress: Record<string, string>;
+  lastEvent: string | null;
+}
+
 interface GameStore {
   inWorld: boolean;
   setInWorld: (val: boolean) => void;
   playerPosition: { x: number; y: number };
   currentArea: string;
+
+  // World state (mirrors game-data/world-state.json)
+  worldState: WorldState;
+  fetchWorldState: () => Promise<void>;
 
   npcStates: Record<string, NPCState>;
   setNPCState: (npcId: string, state: NPCState) => void;
@@ -70,6 +80,17 @@ export const useGameStore = create<GameStore>()(
       setInWorld: (val) => set({ inWorld: val }),
       playerPosition: { x: 400, y: 380 },
       currentArea: "village-square",
+
+      worldState: { buildings: {}, questProgress: {}, lastEvent: null },
+      fetchWorldState: async () => {
+        try {
+          const res = await fetch("/api/world-state");
+          const data = await res.json();
+          set({ worldState: data });
+        } catch (err) {
+          console.warn("Failed to fetch world state:", err);
+        }
+      },
 
       npcStates: {},
       setNPCState: (npcId, state) =>

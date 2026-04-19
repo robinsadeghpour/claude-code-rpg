@@ -1,0 +1,24 @@
+{
+  "building_id": "town-hall",
+  "output": {
+    "width": 512,
+    "height": 768
+  },
+  "variants": [
+    {
+      "id": "primary",
+      "filename_suffix": "",
+      "prompt_path": "prompts/primary.json"
+    },
+    {
+      "id": "glitched",
+      "filename_suffix": "-glitched",
+      "prompt_path": "prompts/glitched.json"
+    },
+    {
+      "id": "healed",
+      "filename_suffix": "-healed",
+      "prompt_path": "prompts/healed.json"
+    }
+  ]
+}

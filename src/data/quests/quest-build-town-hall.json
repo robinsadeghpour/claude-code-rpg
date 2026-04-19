@@ -1,0 +1,37 @@
+{
+  "id": "build-town-hall",
+  "title": "Build the Town Hall",
+  "npcId": "mayor-bramble",
+  "areaId": "village-square",
+  "state": "available",
+  "description": "The mayor needs a town hall — the village has no heart.",
+  "checkId": "town-hall-exists",
+  "trigger": {
+    "type": "asset-exists",
+    "condition": "game-assets/buildings/town-hall.png"
+  },
+  "hudHints": {
+    "objective": "Generate a town hall building for the village",
+    "instruction": "Open your terminal and tell Claude:\n\"use the building generator skill to create a town hall\"",
+    "detail": "Claude Code has skills — reusable recipes that generate things. The building-generator skill will create a town hall sprite and place it in game-assets/buildings/. Once the file appears, the village will react.",
+    "copyable": "use the building generator skill to create a town hall"
+  },
+  "healMoment": {
+    "duration": 2500,
+    "visual": "bloom",
+    "audio": "chime",
+    "npcReaction": [
+      { "speaker": "Mayor Bramble", "text": "It's... it's real. I can feel the ground settling under it." }
+    ],
+    "worldChange": "town-hall-built"
+  },
+  "rewards": {
+    "unlocksNPC": "blacksmith",
+    "worldChange": "town-hall-built"
+  },
+  "_creatorNote": {
+    "concept": "Using Claude Code skills",
+    "lesson": "Players learn to invoke skills from their terminal via Claude Code. This is Phase 1 — the quest HUD gives them the exact command. The NPC never breaks the fiction.",
+    "realWorldParallel": "Running a slash command or skill in Claude Code to generate project assets"
+  }
+}
