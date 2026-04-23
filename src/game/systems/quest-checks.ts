@@ -15,6 +15,11 @@ const checks: Record<string, QuestCheck> = {
     const { worldState } = useGameStore.getState();
     return worldState.buildings["library"]?.exists ?? false;
   },
+  "apprentice-scroll-exists": () => {
+    const { lastForgedApprentice, skills } = useGameStore.getState();
+    if (!lastForgedApprentice) return false;
+    return skills.some((s) => s.name === lastForgedApprentice || s.path.includes(`/${lastForgedApprentice}/`));
+  },
 };
 
 export function runQuestCheck(checkId: string): boolean {

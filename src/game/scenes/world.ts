@@ -4,6 +4,7 @@ import { spawnNPC } from "../entities/npc";
 import { getNPCsForArea } from "../loader";
 import { initBuildingSpawner } from "../systems/building-spawner";
 import { startQuestWatcher } from "../systems/quest";
+import { rollSummon, SUMMON_COOLDOWN_MS } from "../systems/summon";
 import { useGameStore } from "../../store/game-store";
 
 const TILE = 16;
@@ -456,31 +457,51 @@ export function worldScene(k: KAPLAYCtx) {
     // Refresh world state before selecting dialogue
     await useGameStore.getState().fetchWorldState();
     const freshStore = useGameStore.getState();
-    const { worldState } = freshStore;
 
-    // World-state-aware dialogue selection
-    const townHallExists = worldState.buildings["town-hall"]?.exists ?? false;
+    const questId = npcData.questId;
+    const runtimeQuestState = questId ? freshStore.questStates[questId] : undefined;
+    const npcState = freshStore.npcStates[npcId] ?? npcData.state;
+    // Mayor Bramble's fulfilled trigger is town-hall existence (pre-dates quest-state tracking).
+    const townHallExists = freshStore.worldState.buildings["town-hall"]?.exists ?? false;
+    const isFulfilled =
+      runtimeQuestState === "completed" ||
+      npcState === "fulfilled" ||
+      (npcId === "mayor-bramble" && townHallExists);
 
-    if (townHallExists) {
-      // Town hall is built — show fulfilled dialogue
+    if (isFulfilled) {
       freshStore.openDialogue(npcData.dialogue.fulfilled);
-    } else {
-      // No town hall — check if player has talked before
-      const questState = npcData.questId
-        ? freshStore.questStates[npcData.questId] ?? "locked"
-        : "locked";
-
-      if (questState === "active") {
-        // Already talked, give reminder
-        freshStore.openDialogue(npcData.dialogue.reminder);
-      } else {
-        // First encounter — set quest active and give intro dialogue
-        if (npcData.questId) {
-          freshStore.setQuestState(npcData.questId, "active");
-        }
-        freshStore.openDialogue(npcData.dialogue.intro);
-      }
+      return;
     }
+
+    // Loom-Keeper opens the Loom overlay directly (intro lines live inside the overlay).
+    if (npcId === "loom-keeper") {
+      if (questId && runtimeQuestState !== "active") {
+        freshStore.setQuestState(questId, "active");
+      }
+      freshStore.openLoom();
+      return;
+    }
+
+    if (runtimeQuestState === "active") {
+      freshStore.openDialogue(npcData.dialogue.reminder);
+    } else {
+      if (questId) freshStore.setQuestState(questId, "active");
+      freshStore.openDialogue(npcData.dialogue.intro);
+    }
+  });
+
+  // --- Summon apprentice (F key) ---
+  k.onButtonPress("summon", () => {
+    const s = useGameStore.getState();
+    if (s.isDialogueOpen || s.isHealing || s.isLoomOpen || s.isBookshelfOpen || s.isEditorOpen) return;
+    if (!s.lastForgedApprentice || !s.lastApprenticeArchetype) return;
+    const now = performance.now();
+    if (s.summonCooldownUntil > now) return;
+    if (s.activeSummon) return;
+    const effect = rollSummon(s.lastApprenticeArchetype);
+    if (!effect) return;
+    s.triggerSummon({ ...effect, startedAt: now });
+    s.setSummonCooldown(now + SUMMON_COOLDOWN_MS);
   });
 
   // --- Bookshelf toggle (K key) ---
@@ -501,6 +522,17 @@ export function worldScene(k: KAPLAYCtx) {
     }
     if (!state.isBookshelfOpen && prev.isBookshelfOpen) {
       setInteracting(false);
+    }
+  });
+
+  // Disable player movement + set dialogue cooldown when Loom opens/closes
+  useGameStore.subscribe((state, prev) => {
+    if (state.isLoomOpen && !prev.isLoomOpen) {
+      setInteracting(true);
+    }
+    if (!state.isLoomOpen && prev.isLoomOpen) {
+      setInteracting(false);
+      dialogueCooldown = 0.8;
     }
   });
 

@@ -23,6 +23,16 @@ export interface WorldState {
   lastEvent: string | null;
 }
 
+export type VoiceShape = "wide" | "sharp" | "narrow";
+
+export interface ActiveSummon {
+  archetypeId: string;
+  label: string;
+  flavor: string;
+  visual: "scroll" | "spark" | "sparkle";
+  startedAt: number;
+}
+
 interface GameStore {
   inWorld: boolean;
   setInWorld: (val: boolean) => void;
@@ -71,6 +81,23 @@ interface GameStore {
   closeBookshelf: () => void;
   openEditor: (skillName?: string | null) => void;
   closeEditor: () => void;
+
+  // Apprentice / Loom
+  isLoomOpen: boolean;
+  openLoom: () => void;
+  closeLoom: () => void;
+  lastForgedApprentice: string | null;
+  lastApprenticeArchetype: string | null;
+  lastApprenticeShape: VoiceShape | null;
+  recordApprentice: (name: string, archetype: string, shape: VoiceShape) => void;
+
+  // Summon cooldown state (not persisted, rendered by HUD)
+  summonCooldownUntil: number;
+  setSummonCooldown: (untilMs: number) => void;
+
+  activeSummon: ActiveSummon | null;
+  triggerSummon: (s: ActiveSummon) => void;
+  clearSummon: () => void;
 }
 
 export const useGameStore = create<GameStore>()(
@@ -206,6 +233,27 @@ export const useGameStore = create<GameStore>()(
       closeBookshelf: () => set({ isBookshelfOpen: false, isEditorOpen: false, editingSkill: null }),
       openEditor: (skillName = null) => set({ isEditorOpen: true, editingSkill: skillName ?? null }),
       closeEditor: () => set({ isEditorOpen: false, editingSkill: null }),
+
+      // Apprentice / Loom
+      isLoomOpen: false,
+      openLoom: () => set({ isLoomOpen: true }),
+      closeLoom: () => set({ isLoomOpen: false }),
+      lastForgedApprentice: null,
+      lastApprenticeArchetype: null,
+      lastApprenticeShape: null,
+      recordApprentice: (name, archetype, shape) =>
+        set({
+          lastForgedApprentice: name,
+          lastApprenticeArchetype: archetype,
+          lastApprenticeShape: shape,
+        }),
+
+      summonCooldownUntil: 0,
+      setSummonCooldown: (untilMs) => set({ summonCooldownUntil: untilMs }),
+
+      activeSummon: null,
+      triggerSummon: (s) => set({ activeSummon: s }),
+      clearSummon: () => set({ activeSummon: null }),
     }),
     {
       name: "claude-code-rpg-save",
@@ -215,6 +263,9 @@ export const useGameStore = create<GameStore>()(
         npcStates: state.npcStates,
         questStates: state.questStates,
         healedAreas: state.healedAreas,
+        lastForgedApprentice: state.lastForgedApprentice,
+        lastApprenticeArchetype: state.lastApprenticeArchetype,
+        lastApprenticeShape: state.lastApprenticeShape,
       }),
     }
   )

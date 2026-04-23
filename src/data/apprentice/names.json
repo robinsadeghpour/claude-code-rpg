@@ -1,0 +1,26 @@
+{
+  "chronicler": [
+    "note-keeper",
+    "margin-seeker",
+    "ink-bearer",
+    "page-turner",
+    "quiet-eye",
+    "glossary-hand"
+  ],
+  "forgemaster": [
+    "anvil-sparrow",
+    "rune-smith",
+    "lantern-wright",
+    "stone-shaper",
+    "kiln-keeper",
+    "hammer-moth"
+  ],
+  "scout": [
+    "path-finder",
+    "hollow-walker",
+    "whisper-tracker",
+    "lantern-runner",
+    "thistle-eye",
+    "trail-fox"
+  ]
+}

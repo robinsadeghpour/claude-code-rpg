@@ -1,15 +1,19 @@
 import type { NPCData, QuestData } from "../store/types";
 import mayorBrambleData from "../data/npcs/npc-mayor-bramble.json";
+import loomKeeperData from "../data/npcs/npc-loom-keeper.json";
 import buildTownHallData from "../data/quests/quest-build-town-hall.json";
+import weaveAnApprenticeData from "../data/quests/quest-weave-an-apprentice.json";
 
 // ── NPC registry ──
 export const npcs: Record<string, NPCData> = {
   "mayor-bramble": mayorBrambleData as unknown as NPCData,
+  "loom-keeper": loomKeeperData as unknown as NPCData,
 };
 
 // ── Quest registry (single source of truth) ──
 export const quests: Record<string, QuestData> = {
   "build-town-hall": buildTownHallData as unknown as QuestData,
+  "weave-an-apprentice": weaveAnApprenticeData as unknown as QuestData,
 };
 
 export function getNPC(id: string): NPCData | undefined {

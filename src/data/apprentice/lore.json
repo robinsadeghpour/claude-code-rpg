@@ -1,0 +1,25 @@
+{
+  "_note": "Flavor lines the apprentice 'reads' or 'finds' when summoned. Randomly picked per cast. Kept short and village-flavored.",
+  "chronicler": [
+    "Bramble's ledger notes: 'the square was smaller once. the path curved left.'",
+    "A margin-scrawl: 'the forge stood here before the fire. they rebuilt in stone.'",
+    "The charter says: 'every door in the village was carved by one woman.'",
+    "A torn page: 'on the third day of Ember, the well answered a question.'",
+    "Footnote: 'the tall grass grows where the old festival ring was buried.'",
+    "An old map lists a sixth house. No one remembers it."
+  ],
+  "forgemaster": [
+    "A small lantern. It catches the evening light and keeps it.",
+    "A rune-stone. It hums when the wind comes from the east.",
+    "A crate, stamped with Bramble's seal. Empty, for now.",
+    "A stone bench. Warm to the touch for reasons no one asks.",
+    "A waymarker. Points toward whatever you were thinking of."
+  ],
+  "scout": [
+    "Three coins, behind the barrel.",
+    "A trail of footprints leading to the pond, then stopping.",
+    "A loose plank in the fence \u2014 something stored it under.",
+    "A carved notch in the oak, just your height.",
+    "A bird's nest, abandoned last winter. Something inside."
+  ]
+}

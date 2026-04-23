@@ -1,0 +1,38 @@
+{
+  "chronicler": {
+    "id": "chronicler",
+    "label": "Chronicler",
+    "tagline": "Knows what is. Reads the world's margins.",
+    "abilityLabel": "Whisper of Pages",
+    "abilityBlurb": "Opens a scroll that remembers something about what you're looking at.",
+    "clothColor": "#F5E6C8",
+    "accentColor": "#8B6549",
+    "glyph": "\u270e",
+    "defaultTools": ["Read", "Grep", "WebFetch"],
+    "bodyTemplate": "When called, read the surrounding context and return a concise, faithful summary. Keep your voice plain and your facts close to the source.\n\n## Process\n\n1. Scan the files or notes you were given.\n2. Condense what matters; drop what doesn't.\n3. Return the summary with citations when relevant."
+  },
+  "forgemaster": {
+    "id": "forgemaster",
+    "label": "Forgemaster",
+    "tagline": "Makes new things. Shapes from patterns.",
+    "abilityLabel": "Spark of the Anvil",
+    "abilityBlurb": "Plants a small wonder at your feet \u2014 a lantern, a rune-stone, a crate.",
+    "clothColor": "#8B8680",
+    "accentColor": "#C67B5C",
+    "glyph": "\u25c6",
+    "defaultTools": ["Read", "Write", "Edit"],
+    "bodyTemplate": "When called, build the requested thing from a clear template. Prefer consistency over cleverness. Only produce the artifact \u2014 no commentary.\n\n## Process\n\n1. Find the closest existing pattern in the codebase.\n2. Produce the new file matching that pattern exactly.\n3. Return a short list of what was created."
+  },
+  "scout": {
+    "id": "scout",
+    "label": "Scout",
+    "tagline": "Finds what is hidden. Reports quick.",
+    "abilityLabel": "Lantern on the Path",
+    "abilityBlurb": "Lights up hidden things within a few paces of you.",
+    "clothColor": "#7A9B5C",
+    "accentColor": "#4A6B3A",
+    "glyph": "\u25c8",
+    "defaultTools": ["Grep", "Glob", "Read"],
+    "bodyTemplate": "When called, search the codebase for the requested thing and report paths, not opinions. Be fast and specific; do not edit.\n\n## Process\n\n1. Match the query against file paths and contents.\n2. Return a tight list of file paths and line numbers.\n3. Stop \u2014 someone else will decide what to change."
+  }
+}

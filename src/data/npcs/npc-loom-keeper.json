@@ -1,0 +1,38 @@
+{
+  "id": "loom-keeper",
+  "name": "Ysil",
+  "role": "Loom-Keeper",
+  "area": "village-square",
+  "position": { "x": 620, "y": 300 },
+  "state": "waiting",
+  "catchphrase": "Every thread shapes what walks off the loom.",
+  "personality": {
+    "trait": "Patient, weathered, a touch fae",
+    "speechPattern": "Quiet sentences about threads, cloth, and names",
+    "quirk": "Tugs absently at a silver thread wound around her wrist"
+  },
+  "dialogue": {
+    "intro": [
+      { "speaker": "Ysil", "text": "You smell of fresh timber. You've been near the new town hall." },
+      { "speaker": "Ysil", "text": "I am Ysil. I keep the loom. It's been quiet here since the village lost its thread." },
+      { "speaker": "Ysil", "text": "Look — see how it hums when you stand close? It remembers how to make apprentices." },
+      { "speaker": "Ysil", "text": "Apprentices are little helpers woven from intent. You choose their cloth, their name, their voice, the tools they carry. Then they walk off the loom and answer when you call." },
+      { "speaker": "Ysil", "text": "Would you like to weave one? Choose slow. Names that fit too loose fray at the edges." }
+    ],
+    "reminder": [
+      { "speaker": "Ysil", "text": "The loom is still warm. Come back when you are ready to pick up the thread." },
+      { "speaker": "Ysil", "text": "No hurry. A hurried weave unravels by morning." }
+    ],
+    "fulfilled": [
+      { "speaker": "Ysil", "text": "I hear your apprentice moving about the village. That is a good weave." },
+      { "speaker": "Ysil", "text": "Press F anywhere out there and they'll come. Each kind answers their own way." },
+      { "speaker": "Ysil", "text": "Oh — they also left a scroll on your shelf. If you know where to look beyond the village, you may find it waiting for them out there too." }
+    ]
+  },
+  "sprite": {
+    "waiting": "npc-blacksmith",
+    "fulfilled": "npc-blacksmith-alt"
+  },
+  "questId": "weave-an-apprentice",
+  "_creatorNote": "Teaches skill authoring through a character-creation ritual. Interaction triggers the Loom creator UI, not a normal dialogue reminder. Intro plays once; completing the creator writes a real SKILL.md to .claude/skills/<name>/ and fires the heal moment."
+}

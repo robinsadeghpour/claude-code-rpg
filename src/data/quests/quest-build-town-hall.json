@@ -26,7 +26,7 @@
     "worldChange": "town-hall-built"
   },
   "rewards": {
-    "unlocksNPC": "blacksmith",
+    "unlocksNPC": "loom-keeper",
     "worldChange": "town-hall-built"
   },
   "_creatorNote": {

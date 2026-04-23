@@ -20,6 +20,7 @@ export function initGame(canvas: HTMLCanvasElement) {
       left: { keyboard: ["a", "left"] },
       right: { keyboard: ["d", "right"] },
       bookshelf: { keyboard: ["k"] },
+      summon: { keyboard: ["f"] },
     },
   });
 

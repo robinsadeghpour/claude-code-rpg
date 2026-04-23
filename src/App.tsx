@@ -6,6 +6,8 @@ import { QuestJournal } from "./ui/quest-journal";
 import { HUD } from "./ui/hud";
 import { Bookshelf } from "./ui/bookshelf";
 import { SkillEditor } from "./ui/skill-editor";
+import { LoomOverlay } from "./ui/loom/loom";
+import { SummonOverlay } from "./ui/summon-overlay";
 
 export function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -25,6 +27,8 @@ export function App() {
       <HUD />
       <Bookshelf />
       <SkillEditor />
+      <LoomOverlay />
+      <SummonOverlay />
     </div>
   );
 }
