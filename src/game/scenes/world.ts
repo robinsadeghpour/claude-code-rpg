@@ -375,6 +375,7 @@ function addAtmosphere(k: KAPLAYCtx) {
 export function worldScene(k: KAPLAYCtx) {
   const store = useGameStore.getState();
   store.setInWorld(true);
+  store.startGame();
   const { playerPosition, currentArea } = store;
 
   // --- Terrain & environment ---

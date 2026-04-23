@@ -19,6 +19,7 @@ export function initGame(canvas: HTMLCanvasElement) {
       down: { keyboard: ["s", "down"] },
       left: { keyboard: ["a", "left"] },
       right: { keyboard: ["d", "right"] },
+      back: { keyboard: ["escape", "backspace"] },
       bookshelf: { keyboard: ["k"] },
       summon: { keyboard: ["f"] },
     },

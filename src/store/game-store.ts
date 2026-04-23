@@ -39,6 +39,10 @@ interface GameStore {
   playerPosition: { x: number; y: number };
   currentArea: string;
 
+  hasStartedGame: boolean;
+  startGame: () => void;
+  resetGame: () => void;
+
   // World state (mirrors game-data/world-state.json)
   worldState: WorldState;
   fetchWorldState: () => Promise<void>;
@@ -107,6 +111,18 @@ export const useGameStore = create<GameStore>()(
       setInWorld: (val) => set({ inWorld: val }),
       playerPosition: { x: 400, y: 380 },
       currentArea: "village-square",
+
+      hasStartedGame: false,
+      startGame: () => set({ hasStartedGame: true }),
+      resetGame: () =>
+        set({
+          hasStartedGame: false,
+          playerPosition: { x: 400, y: 380 },
+          currentArea: "village-square",
+          npcStates: {},
+          questStates: {},
+          healedAreas: [],
+        }),
 
       worldState: { buildings: {}, questProgress: {}, lastEvent: null },
       fetchWorldState: async () => {
@@ -258,6 +274,7 @@ export const useGameStore = create<GameStore>()(
     {
       name: "claude-code-rpg-save",
       partialize: (state) => ({
+        hasStartedGame: state.hasStartedGame,
         playerPosition: state.playerPosition,
         currentArea: state.currentArea,
         npcStates: state.npcStates,
