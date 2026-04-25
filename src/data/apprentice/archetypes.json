@@ -1,0 +1,41 @@
+{
+  "house-builder": {
+    "id": "house-builder",
+    "label": "House Builder",
+    "tagline": "Builds a cozy house wherever you stand.",
+    "abilityLabel": "Place a House",
+    "abilityBlurb": "Press F in the village. Paste the line into Claude Code. A new house appears at your feet.",
+    "buildKind": "house",
+    "clothColor": "#F5E6C8",
+    "accentColor": "#8B6549",
+    "glyph": "\u2302",
+    "defaultTools": ["Read", "Write", "Edit", "Bash"],
+    "bodyTemplate": "When called, place a cozy house at the player's current position in the Claude Code RPG game world. The sprite is already pre-generated; this skill only copies it and registers the placement. No image generation, no model calls.\n\n## Process\n\n1. Read `game-data/placement-intent.json` to get `skillName`, `kind`, `position` (x, y in game pixels), and `buildingId`.\n2. Copy the pre-generated template into the live buildings dir:\n   ```bash\n   cp game-assets/buildings/templates/house.png game-assets/buildings/<buildingId>.png\n   ```\n3. Add a new entry to `game-data/buildings.json` under the key `<buildingId>`:\n   ```json\n   {\n     \"position\": [<x>, <y>],\n     \"spriteKey\": \"<buildingId>\",\n     \"assetFile\": \"<buildingId>.png\",\n     \"scale\": 0.25,\n     \"label\": \"Cozy House\",\n     \"interactable\": false,\n     \"unlocks\": []\n   }\n   ```\n4. Confirm with one short sentence (e.g. \"Placed a cozy house at (x, y).\"). Do not commit. The dev server's file watcher picks up the new sprite and spawns it in the running game."
+  },
+  "farm-maker": {
+    "id": "farm-maker",
+    "label": "Farm Maker",
+    "tagline": "Lays down a farm plot \u2014 tilled rows and a small scarecrow.",
+    "abilityLabel": "Place a Farm",
+    "abilityBlurb": "Press F in the village. Paste the line into Claude Code. A small farm appears at your feet.",
+    "buildKind": "farm",
+    "clothColor": "#D9C691",
+    "accentColor": "#6B5239",
+    "glyph": "\u2698",
+    "defaultTools": ["Read", "Write", "Edit", "Bash"],
+    "bodyTemplate": "When called, place a small farm plot at the player's current position in the Claude Code RPG game world. The sprite is already pre-generated; this skill only copies it and registers the placement. No image generation, no model calls.\n\n## Process\n\n1. Read `game-data/placement-intent.json` to get `skillName`, `kind`, `position`, and `buildingId`.\n2. Copy the pre-generated template:\n   ```bash\n   cp game-assets/buildings/templates/farm.png game-assets/buildings/<buildingId>.png\n   ```\n3. Add an entry to `game-data/buildings.json`:\n   ```json\n   {\n     \"position\": [<x>, <y>],\n     \"spriteKey\": \"<buildingId>\",\n     \"assetFile\": \"<buildingId>.png\",\n     \"scale\": 0.25,\n     \"label\": \"Little Farm\",\n     \"interactable\": false,\n     \"unlocks\": []\n   }\n   ```\n4. Confirm with one short sentence. The dev server's file watcher will spawn the farm in the running game."
+  },
+  "lantern-lighter": {
+    "id": "lantern-lighter",
+    "label": "Lantern Lighter",
+    "tagline": "Plants a glowing lantern at your feet.",
+    "abilityLabel": "Place a Lantern",
+    "abilityBlurb": "Press F in the village. Paste the line into Claude Code. A warm lantern appears at your feet.",
+    "buildKind": "lantern",
+    "clothColor": "#F4D88C",
+    "accentColor": "#A06A2C",
+    "glyph": "\u26ee",
+    "defaultTools": ["Read", "Write", "Edit", "Bash"],
+    "bodyTemplate": "When called, place a warm lantern at the player's current position in the Claude Code RPG game world. The sprite is already pre-generated; this skill only copies it and registers the placement. No image generation, no model calls.\n\n## Process\n\n1. Read `game-data/placement-intent.json` to get `skillName`, `kind`, `position`, and `buildingId`.\n2. Copy the pre-generated template:\n   ```bash\n   cp game-assets/buildings/templates/lantern.png game-assets/buildings/<buildingId>.png\n   ```\n3. Add an entry to `game-data/buildings.json`:\n   ```json\n   {\n     \"position\": [<x>, <y>],\n     \"spriteKey\": \"<buildingId>\",\n     \"assetFile\": \"<buildingId>.png\",\n     \"scale\": 0.25,\n     \"label\": \"Warm Lantern\",\n     \"interactable\": false,\n     \"unlocks\": []\n   }\n   ```\n4. Confirm with one short sentence. The dev server's file watcher will spawn the lantern in the running game."
+  }
+}

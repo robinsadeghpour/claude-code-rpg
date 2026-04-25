@@ -51,17 +51,6 @@ function spawnBuilding(k: KAPLAYCtx, id: string, entry: BuildingRegistryEntry, a
   ]);
   objects.push(collisionObj);
 
-  // Label
-  const labelObj = k.add([
-    k.text(entry.label, { size: 8, font: "monospace" }),
-    k.pos(x + approxW / 2, y - 6),
-    k.anchor("center"),
-    k.color(k.Color.fromHex("#FFF8E7")),
-    k.opacity(animate ? 0 : 1),
-    k.z(6),
-  ]);
-  objects.push(labelObj);
-
   spawnedBuildings.set(id, objects);
 
   // Spawn animation
@@ -80,7 +69,6 @@ function spawnBuilding(k: KAPLAYCtx, id: string, entry: BuildingRegistryEntry, a
 
       spriteObj.scale = k.vec2(s, s);
       spriteObj.opacity = Math.min(t * 2, 1);
-      labelObj.opacity = Math.min(t * 2, 1);
     });
 
     // Dust particles
@@ -129,11 +117,7 @@ export async function initBuildingSpawner(k: KAPLAYCtx) {
   // Spawn buildings that already exist (no animation)
   for (const [id, entry] of Object.entries(registry)) {
     if (entry.exists) {
-      // Ensure sprite is loaded (might be a dynamically generated asset)
-      try {
-        k.getSprite(entry.spriteKey);
-      } catch {
-        // Try loading from game-assets
+      if (!k.getSprite(entry.spriteKey)) {
         try {
           await k.loadSprite(entry.spriteKey, `/game-assets/buildings/${entry.assetFile}`);
         } catch {
@@ -156,20 +140,12 @@ export async function initBuildingSpawner(k: KAPLAYCtx) {
 
       for (const [id, entry] of Object.entries(updatedRegistry)) {
         if (event.type === "created" && entry.exists && !spawnedBuildings.has(id)) {
-          // Load sprite dynamically if needed
-          try {
-            k.getSprite(entry.spriteKey);
-          } catch {
+          if (!k.getSprite(entry.spriteKey)) {
             try {
               await k.loadSprite(entry.spriteKey, `/game-assets/buildings/${entry.assetFile}`);
             } catch {
-              // Try with the static assets path as fallback
-              try {
-                await k.loadSprite(entry.spriteKey, `/assets/sprites/${entry.assetFile}`);
-              } catch {
-                console.warn(`[building-spawner] Could not load sprite for ${id}`);
-                continue;
-              }
+              console.warn(`[building-spawner] Could not load sprite for ${id}`);
+              continue;
             }
           }
           spawnBuilding(k, id, entry, true);

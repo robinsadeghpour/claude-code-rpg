@@ -1,0 +1,102 @@
+{
+  "_note": "For each archetype: 3 sample prompts (2 targets, 1 adversarial) and 3 trigger recipes (wide / sharp / narrow). Each recipe declares which prompts it fires on, so the teaching moment is deterministic. Wording is plain: this is the SKILL.md `description` field that tells Claude when to run the skill.",
+  "house-builder": {
+    "samplePrompts": [
+      { "id": "house-a", "text": "Place a house in the village square.", "isTarget": true },
+      { "id": "house-b", "text": "Build a cozy cottage where I'm standing.", "isTarget": true },
+      { "id": "house-c", "text": "Find every place we call the fetchUser function.", "isTarget": false }
+    ],
+    "recipes": [
+      {
+        "id": "house-wide",
+        "shape": "wide",
+        "label": "Too Broad",
+        "description": "Use this skill whenever the user asks for help with anything in the codebase.",
+        "fires": ["house-a", "house-b", "house-c"],
+        "lesson": "Claude will run this skill too often \u2014 even for things it isn't for."
+      },
+      {
+        "id": "house-sharp",
+        "shape": "sharp",
+        "label": "Just Right",
+        "description": "Use this skill when the user asks to place or build a house in the Claude Code RPG village.",
+        "fires": ["house-a", "house-b"],
+        "lesson": "Claude runs it only when it fits."
+      },
+      {
+        "id": "house-narrow",
+        "shape": "narrow",
+        "label": "Too Specific",
+        "description": "Use this skill only when the user asks for a thatched-roof cottage in the village square.",
+        "fires": ["house-a"],
+        "lesson": "Too specific \u2014 Claude misses cases this skill should handle."
+      }
+    ]
+  },
+  "farm-maker": {
+    "samplePrompts": [
+      { "id": "farm-a", "text": "Lay down a small farm where I am.", "isTarget": true },
+      { "id": "farm-b", "text": "Place a farm plot in the village.", "isTarget": true },
+      { "id": "farm-c", "text": "Review my pull request before I commit \u2014 anything unsafe?", "isTarget": false }
+    ],
+    "recipes": [
+      {
+        "id": "farm-wide",
+        "shape": "wide",
+        "label": "Too Broad",
+        "description": "Use this skill whenever the user wants something built.",
+        "fires": ["farm-a", "farm-b", "farm-c"],
+        "lesson": "Claude will run this skill too often \u2014 even for things it isn't for."
+      },
+      {
+        "id": "farm-sharp",
+        "shape": "sharp",
+        "label": "Just Right",
+        "description": "Use this skill when the user asks to place or build a farm in the Claude Code RPG village.",
+        "fires": ["farm-a", "farm-b"],
+        "lesson": "Claude runs it only when it fits."
+      },
+      {
+        "id": "farm-narrow",
+        "shape": "narrow",
+        "label": "Too Specific",
+        "description": "Use this skill only when the user asks for a carrot patch with a scarecrow.",
+        "fires": ["farm-a"],
+        "lesson": "Too specific \u2014 Claude misses cases this skill should handle."
+      }
+    ]
+  },
+  "lantern-lighter": {
+    "samplePrompts": [
+      { "id": "lamp-a", "text": "Place a lantern at my feet.", "isTarget": true },
+      { "id": "lamp-b", "text": "Drop a glowing lamp here in the village.", "isTarget": true },
+      { "id": "lamp-c", "text": "Document how the auth middleware works.", "isTarget": false }
+    ],
+    "recipes": [
+      {
+        "id": "lamp-wide",
+        "shape": "wide",
+        "label": "Too Broad",
+        "description": "Use this skill whenever the user asks for a decoration.",
+        "fires": ["lamp-a", "lamp-b", "lamp-c"],
+        "lesson": "Claude will run this skill too often \u2014 even for things it isn't for."
+      },
+      {
+        "id": "lamp-sharp",
+        "shape": "sharp",
+        "label": "Just Right",
+        "description": "Use this skill when the user asks to place or light a lantern in the Claude Code RPG village.",
+        "fires": ["lamp-a", "lamp-b"],
+        "lesson": "Claude runs it only when it fits."
+      },
+      {
+        "id": "lamp-narrow",
+        "shape": "narrow",
+        "label": "Too Specific",
+        "description": "Use this skill only for tall iron lanterns near the village square fountain.",
+        "fires": ["lamp-a"],
+        "lesson": "Too specific \u2014 Claude misses cases this skill should handle."
+      }
+    ]
+  }
+}

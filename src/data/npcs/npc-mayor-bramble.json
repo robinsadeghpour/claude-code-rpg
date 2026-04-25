@@ -27,8 +27,8 @@
     "fulfilled": [
       { "speaker": "Mayor Bramble", "text": "A town hall. A real, actual town hall. I almost can't believe it." },
       { "speaker": "Mayor Bramble", "text": "Now I can get to work. There's so much to organize." },
-      { "speaker": "Mayor Bramble", "text": "You know, Harlan — the blacksmith — he's been standing by an empty lot for days. Keeps muttering about needing a forge." },
-      { "speaker": "Mayor Bramble", "text": "I bet he'd be thrilled if someone could help him out too." }
+      { "speaker": "Mayor Bramble", "text": "You know, Ysil set up a little recipe table by the hall. She's been waiting for someone steady-handed to sit with her." },
+      { "speaker": "Mayor Bramble", "text": "Go say hello \u2014 she'll teach you to write a skill of your own. The village will feel fuller for it." }
     ]
   },
   "sprite": {

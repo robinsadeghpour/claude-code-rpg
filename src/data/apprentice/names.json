@@ -1,0 +1,26 @@
+{
+  "house-builder": [
+    "cozy-cottage",
+    "oak-house",
+    "thatch-roof",
+    "warm-hearth",
+    "stone-cottage",
+    "river-house"
+  ],
+  "farm-maker": [
+    "oak-farm",
+    "small-plot",
+    "scarecrow-row",
+    "harvest-patch",
+    "carrot-field",
+    "morning-furrow"
+  ],
+  "lantern-lighter": [
+    "lamp-light",
+    "warm-glow",
+    "path-lantern",
+    "evening-flame",
+    "yellow-lamp",
+    "porch-light"
+  ]
+}

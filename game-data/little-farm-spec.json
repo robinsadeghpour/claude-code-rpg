@@ -1,0 +1,33 @@
+{
+  "building_id": "little-farm",
+  "display_name": "Little Farm",
+  "style_lock": {
+    "project_style": "cozy pixel art rpg",
+    "perspective": "front-facing with slight top-down ground visibility",
+    "palette_mode": "brand-and-tone healthy palette",
+    "render_constraints": [
+      "pixel art only",
+      "transparent background",
+      "crisp edges",
+      "no anti-aliased blur"
+    ]
+  },
+  "architecture": {
+    "silhouette": "small farm plot scene",
+    "materials": [
+      "tilled brown soil",
+      "green crop sprouts",
+      "wooden post and straw scarecrow"
+    ],
+    "must_keep_details": [
+      "three or four tilled rows",
+      "scattered sprouts",
+      "tiny scarecrow"
+    ],
+    "color_notes": [
+      "warm soil browns",
+      "fresh sprout greens",
+      "sunbeam-yellow straw"
+    ]
+  }
+}

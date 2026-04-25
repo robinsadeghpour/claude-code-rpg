@@ -2,7 +2,7 @@
   "buildings": {
     "town-hall": {
       "exists": true,
-      "builtAt": "2026-04-19T15:59:40.875Z"
+      "builtAt": "2026-04-25T19:47:51.772Z"
     },
     "forge": {
       "exists": false,
@@ -11,8 +11,12 @@
     "library": {
       "exists": false,
       "builtAt": null
+    },
+    "player-lantern-moer6bp3dj": {
+      "exists": true,
+      "builtAt": "2026-04-25T19:49:51.815Z"
     }
   },
   "questProgress": {},
-  "lastEvent": "town-hall-built"
+  "lastEvent": "player-lantern-moer6bp3dj-built"
 }

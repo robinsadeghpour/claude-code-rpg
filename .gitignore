@@ -55,3 +55,6 @@ __pycache__/
 
 # pnpm
 .pnpm-store/
+
+# Per-session game intent (written by browser, read by player skills)
+game-data/placement-intent.json

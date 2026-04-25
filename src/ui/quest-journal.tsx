@@ -171,7 +171,7 @@ function QuestDetailModal({
 export function QuestJournal() {
   const [open, setOpen] = useState(false);
   const [selectedQuest, setSelectedQuest] = useState<QuestData | null>(null);
-  const { questStates, inWorld } = useGameStore();
+  const { questStates, inWorld, seenQuestIds, markQuestsSeen } = useGameStore();
 
   if (!inWorld) return null;
 
@@ -179,10 +179,25 @@ export function QuestJournal() {
     (q) => (questStates[q.id] ?? q.state) !== "locked",
   );
 
+  const unseenQuests = visibleQuests.filter((q) => {
+    const state = questStates[q.id] ?? q.state;
+    return state !== "completed" && !seenQuestIds.includes(q.id);
+  });
+
+  function handleToggle() {
+    setOpen((v) => {
+      const next = !v;
+      if (next && unseenQuests.length > 0) {
+        markQuestsSeen(unseenQuests.map((q) => q.id));
+      }
+      return next;
+    });
+  }
+
   return (
     <>
       <button
-        onClick={() => setOpen((v) => !v)}
+        onClick={handleToggle}
         style={{
           position: "fixed",
           top: 16,
@@ -201,6 +216,36 @@ export function QuestJournal() {
       >
         Journal
       </button>
+
+      {!open && unseenQuests.length > 0 && (
+        <div
+          onClick={handleToggle}
+          style={{
+            position: "fixed",
+            top: 52,
+            right: 16,
+            zIndex: 900,
+            background: "rgba(255, 224, 102, 0.95)",
+            color: "#1a1a2e",
+            fontFamily: PIXEL,
+            fontSize: 8,
+            padding: "8px 10px",
+            borderRadius: 4,
+            border: "2px solid #1a1a2e",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
+            cursor: "pointer",
+            maxWidth: 200,
+            lineHeight: 1.4,
+            animation: "questBubblePulse 1.6s ease-in-out infinite",
+          }}
+        >
+          <div style={{ position: "absolute", top: -6, right: 18, width: 0, height: 0, borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderBottom: "6px solid #1a1a2e" }} />
+          <div style={{ position: "absolute", top: -3, right: 19, width: 0, height: 0, borderLeft: "5px solid transparent", borderRight: "5px solid transparent", borderBottom: "5px solid rgba(255, 224, 102, 0.95)" }} />
+          You have a new quest!
+        </div>
+      )}
+
+      <style>{`@keyframes questBubblePulse { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }`}</style>
 
       {/* Quest list panel */}
       {open && (

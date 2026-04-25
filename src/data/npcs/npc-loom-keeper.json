@@ -1,0 +1,39 @@
+{
+  "id": "loom-keeper",
+  "name": "Ysil",
+  "role": "Skill-Keeper",
+  "area": "village-square",
+  "position": { "x": 620, "y": 300 },
+  "state": "waiting",
+  "catchphrase": "A skill is just a recipe Claude can run.",
+  "personality": {
+    "trait": "Patient, weathered, plain-spoken",
+    "speechPattern": "Short, clear sentences. Calls things what they are.",
+    "quirk": "Keeps a folded sheet of skill recipes in her apron pocket"
+  },
+  "dialogue": {
+    "intro": [
+      { "speaker": "Ysil", "text": "You smell of fresh timber. You've been near the new town hall." },
+      { "speaker": "Ysil", "text": "I'm Ysil. I write skills here. Recipes I hand to Claude when I want help with something." },
+      { "speaker": "Ysil", "text": "A skill is just a markdown file Claude can run from your terminal. Three parts: what it does, what it's called, and when Claude should use it." },
+      { "speaker": "Ysil", "text": "Let's write one together. We'll make a skill that builds something useful for the village \u2014 a house, a farm, or a lantern \u2014 wherever you stand." },
+      { "speaker": "Ysil", "text": "Pick slow. The third part \u2014 when Claude should use it \u2014 is the one most people get wrong." }
+    ],
+    "reminder": [
+      { "speaker": "Ysil", "text": "The recipe sheet is still here when you want to come back to it." },
+      { "speaker": "Ysil", "text": "No hurry. Better a clear skill than a hasty one." }
+    ],
+    "fulfilled": [
+      { "speaker": "Ysil", "text": "One skill a day, that's my rule. We wrote yours \u2014 my work here is done." },
+      { "speaker": "Ysil", "text": "Press F anywhere out there to use it. You'll get a line to paste into Claude." },
+      { "speaker": "Ysil", "text": "The file lives in `.claude/skills/` if you ever want to read it or change it." },
+      { "speaker": "Ysil", "text": "Come back tomorrow if you'd like, but the recipe table is folded up for the day." }
+    ]
+  },
+  "sprite": {
+    "waiting": "npc-blacksmith",
+    "fulfilled": "npc-blacksmith-alt"
+  },
+  "questId": "weave-an-apprentice",
+  "_creatorNote": "Teaches Claude Code skill authoring through a small, plain-spoken creator UI. The player picks a buildable (house/farm/lantern), names the skill, and tunes the trigger description. The final SKILL.md goes to .claude/skills/<name>/. Pressing F in the village opens a popup with a copyable command; pasting it in Claude Code invokes the player's skill, which writes a sprite + registry entry. The file watcher spawns the building in the running game."
+}

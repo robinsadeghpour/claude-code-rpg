@@ -23,11 +23,31 @@ export interface WorldState {
   lastEvent: string | null;
 }
 
+export type VoiceShape = "wide" | "sharp" | "narrow";
+
+export interface ActiveInvoke {
+  skillName: string;
+  archetypeId: string;
+  kind: "house" | "farm" | "lantern";
+  buildLabel: string;
+  position: [number, number];
+  buildingId: string;
+  command: string;
+  /** "ready" → showing copyable + place button. "waiting" → intent posted, waiting for build. */
+  phase: "ready" | "waiting" | "error";
+  errorMessage?: string;
+  startedAt: number;
+}
+
 interface GameStore {
   inWorld: boolean;
   setInWorld: (val: boolean) => void;
   playerPosition: { x: number; y: number };
   currentArea: string;
+
+  hasStartedGame: boolean;
+  startGame: () => void;
+  resetGame: () => Promise<void>;
 
   // World state (mirrors game-data/world-state.json)
   worldState: WorldState;
@@ -38,6 +58,9 @@ interface GameStore {
 
   questStates: Record<string, QuestState>;
   setQuestState: (questId: string, state: QuestState) => void;
+
+  seenQuestIds: string[];
+  markQuestsSeen: (ids: string[]) => void;
 
   isDialogueOpen: boolean;
   currentDialogue: DialogueLine[] | null;
@@ -71,6 +94,21 @@ interface GameStore {
   closeBookshelf: () => void;
   openEditor: (skillName?: string | null) => void;
   closeEditor: () => void;
+
+  // Apprentice / Loom
+  isLoomOpen: boolean;
+  openLoom: () => void;
+  closeLoom: () => void;
+  lastForgedApprentice: string | null;
+  lastApprenticeArchetype: string | null;
+  lastApprenticeShape: VoiceShape | null;
+  hasUsedForgedSkill: boolean;
+  recordApprentice: (name: string, archetype: string, shape: VoiceShape) => void;
+
+  activeInvoke: ActiveInvoke | null;
+  openInvoke: (s: ActiveInvoke) => void;
+  setInvokePhase: (phase: ActiveInvoke["phase"], errorMessage?: string) => void;
+  clearInvoke: () => void;
 }
 
 export const useGameStore = create<GameStore>()(
@@ -80,6 +118,31 @@ export const useGameStore = create<GameStore>()(
       setInWorld: (val) => set({ inWorld: val }),
       playerPosition: { x: 400, y: 380 },
       currentArea: "village-square",
+
+      hasStartedGame: false,
+      startGame: () => set({ hasStartedGame: true }),
+      resetGame: async () => {
+        // Wipe server-side built assets + world-state so the village starts blank.
+        try {
+          await fetch("/api/reset-world", { method: "POST" });
+        } catch (err) {
+          console.warn("Failed to reset world on server:", err);
+        }
+        set({
+          hasStartedGame: false,
+          playerPosition: { x: 400, y: 380 },
+          currentArea: "village-square",
+          npcStates: {},
+          questStates: {},
+          seenQuestIds: [],
+          healedAreas: [],
+          worldState: { buildings: {}, questProgress: {}, lastEvent: null },
+          lastForgedApprentice: null,
+          lastApprenticeArchetype: null,
+          lastApprenticeShape: null,
+          hasUsedForgedSkill: false,
+        });
+      },
 
       worldState: { buildings: {}, questProgress: {}, lastEvent: null },
       fetchWorldState: async () => {
@@ -99,6 +162,15 @@ export const useGameStore = create<GameStore>()(
       questStates: {},
       setQuestState: (questId, state) =>
         set((s) => ({ questStates: { ...s.questStates, [questId]: state } })),
+
+      seenQuestIds: [],
+      markQuestsSeen: (ids) =>
+        set((s) => {
+          const next = new Set(s.seenQuestIds);
+          for (const id of ids) next.add(id);
+          if (next.size === s.seenQuestIds.length) return {};
+          return { seenQuestIds: Array.from(next) };
+        }),
 
       isDialogueOpen: false,
       currentDialogue: null,
@@ -206,15 +278,47 @@ export const useGameStore = create<GameStore>()(
       closeBookshelf: () => set({ isBookshelfOpen: false, isEditorOpen: false, editingSkill: null }),
       openEditor: (skillName = null) => set({ isEditorOpen: true, editingSkill: skillName ?? null }),
       closeEditor: () => set({ isEditorOpen: false, editingSkill: null }),
+
+      // Apprentice / Loom
+      isLoomOpen: false,
+      openLoom: () => set({ isLoomOpen: true }),
+      closeLoom: () => set({ isLoomOpen: false }),
+      lastForgedApprentice: null,
+      lastApprenticeArchetype: null,
+      lastApprenticeShape: null,
+      hasUsedForgedSkill: false,
+      recordApprentice: (name, archetype, shape) =>
+        set({
+          lastForgedApprentice: name,
+          lastApprenticeArchetype: archetype,
+          lastApprenticeShape: shape,
+          hasUsedForgedSkill: false,
+        }),
+
+      activeInvoke: null,
+      openInvoke: (s) => set({ activeInvoke: s, hasUsedForgedSkill: true }),
+      setInvokePhase: (phase, errorMessage) =>
+        set((state) =>
+          state.activeInvoke
+            ? { activeInvoke: { ...state.activeInvoke, phase, errorMessage } }
+            : {},
+        ),
+      clearInvoke: () => set({ activeInvoke: null }),
     }),
     {
       name: "claude-code-rpg-save",
       partialize: (state) => ({
+        hasStartedGame: state.hasStartedGame,
         playerPosition: state.playerPosition,
         currentArea: state.currentArea,
         npcStates: state.npcStates,
         questStates: state.questStates,
+        seenQuestIds: state.seenQuestIds,
         healedAreas: state.healedAreas,
+        lastForgedApprentice: state.lastForgedApprentice,
+        lastApprenticeArchetype: state.lastApprenticeArchetype,
+        lastApprenticeShape: state.lastApprenticeShape,
+        hasUsedForgedSkill: state.hasUsedForgedSkill,
       }),
     }
   )
