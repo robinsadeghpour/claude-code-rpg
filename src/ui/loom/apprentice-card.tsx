@@ -21,7 +21,7 @@ export function ApprenticeCard({ name, archetypeId, shape, description, catchphr
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `apprentice-${name}.svg`;
+    a.download = `skill-${name}.svg`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -61,7 +61,7 @@ function buildSvg(args: {
   const badge = shapeBadgeColor(shape);
   const cloth = archetype?.clothColor ?? "#FFF8E7";
   const accent = archetype?.accentColor ?? "#8B6549";
-  const archLabel = archetype?.label ?? "Apprentice";
+  const archLabel = archetype?.label ?? "Skill";
   const glyph = archetype?.glyph ?? "◈";
   const abilityLabel = archetype?.abilityLabel ?? "Ability";
   const abilityBlurb = archetype?.abilityBlurb ?? "";

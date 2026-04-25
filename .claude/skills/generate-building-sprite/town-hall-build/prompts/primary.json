@@ -1,0 +1,56 @@
+{
+  "task": "Generate a single front-facing building sprite for a top-down cozy pixel RPG.",
+  "output": {
+    "format": "png",
+    "background": "transparent",
+    "width": 512,
+    "height": 768
+  },
+  "style_lock": {
+    "project_style": "cozy pixel art rpg",
+    "perspective": "front-facing with slight top-down roof visibility",
+    "palette_mode": "brand-and-tone healthy palette",
+    "render_constraints": [
+      "pixel art only",
+      "transparent background",
+      "crisp edges",
+      "no anti-aliased blur"
+    ]
+  },
+  "building": {
+    "id": "town-hall",
+    "name": "Town Hall",
+    "architecture": {
+      "silhouette": "large prominent village building, tallest in the square",
+      "materials": [
+        "warm stone walls",
+        "dark wooden timber framing",
+        "terracotta tile roof with small bell tower"
+      ],
+      "must_keep_details": [
+        "large double door entrance",
+        "three arched windows",
+        "small bell tower on roof peak",
+        "wooden notice board beside door",
+        "two lanterns flanking entrance"
+      ],
+      "color_notes": [
+        "warm cream walls (#FFF8E7)",
+        "terracotta (#C67B5C) roof tiles",
+        "dark wood (#3A3A3A) timber accents",
+        "peach (#FFB088) and sunbeam yellow (#FFE066) lantern glow"
+      ]
+    }
+  },
+  "variant": {
+    "id": "primary",
+    "modifier": "healthy village state, welcoming and proud civic building, warm lantern light, clean notice board"
+  },
+  "constraints": [
+    "single building centered in frame",
+    "no extra props around building",
+    "no text",
+    "no watermark",
+    "transparent background"
+  ]
+}

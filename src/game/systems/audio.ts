@@ -50,6 +50,47 @@ class AudioManager {
   private nextLoopTimer: number | null = null;
   private trackedNodes: TrackedNode[] = [];
 
+  // Whether music was playing before the tab became hidden, so we can resume.
+  private wasPlayingBeforeHide = false;
+
+  constructor() {
+    if (typeof document !== "undefined") {
+      // Stop the music loop whenever the tab is hidden, so background tabs
+      // don't leak audio. Restart it when the tab becomes visible again.
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          this.wasPlayingBeforeHide = this.musicRunning;
+          if (this.musicRunning) this.stopMusic();
+          if (this.ctx && this.ctx.state === "running") {
+            void this.ctx.suspend();
+          }
+        } else if (this.wasPlayingBeforeHide) {
+          this.wasPlayingBeforeHide = false;
+          if (this.ctx && this.ctx.state === "suspended") {
+            void this.ctx.resume();
+          }
+          this.startMusic();
+        }
+      });
+    }
+    if (typeof window !== "undefined") {
+      // On tab close / navigation away, fully tear down the audio context
+      // so it can't keep producing sound from a backgrounded process.
+      const teardown = () => {
+        this.stopMusic();
+        if (this.ctx) {
+          try { void this.ctx.close(); } catch { /* ignore */ }
+          this.ctx = null;
+          this.masterGain = null;
+          this.musicGain = null;
+          this.sfxGain = null;
+        }
+      };
+      window.addEventListener("pagehide", teardown);
+      window.addEventListener("beforeunload", teardown);
+    }
+  }
+
   // ─── persistence ───────────────────────────────────────────────
 
   private load(): Volumes {

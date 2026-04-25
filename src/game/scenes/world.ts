@@ -4,7 +4,7 @@ import { spawnNPC } from "../entities/npc";
 import { getNPCsForArea } from "../loader";
 import { initBuildingSpawner } from "../systems/building-spawner";
 import { startQuestWatcher } from "../systems/quest";
-import { rollSummon, SUMMON_COOLDOWN_MS } from "../systems/summon";
+import { buildInvokeContext } from "../systems/summon";
 import { useGameStore } from "../../store/game-store";
 
 const TILE = 16;
@@ -387,10 +387,6 @@ export function worldScene(k: KAPLAYCtx) {
   // --- Dynamic buildings (driven by file watcher) ---
   initBuildingSpawner(k);
 
-  // --- Fetch initial world state & start quest watcher ---
-  store.fetchWorldState();
-  startQuestWatcher();
-
   // --- Player ---
   const { obj: playerObj, setInteracting } = spawnPlayer(
     k,
@@ -404,11 +400,29 @@ export function worldScene(k: KAPLAYCtx) {
   });
 
   // --- NPCs ---
+  // The loom-keeper (Ysil) is hidden until the town hall is built
   const areaNPCs = getNPCsForArea(currentArea);
-  const npcObjs = areaNPCs.map((npcData) => {
+  const loomKeeperNPC = areaNPCs.find((n) => n.id === "loom-keeper");
+  const baseNPCs = areaNPCs.filter((n) => n.id !== "loom-keeper");
+
+  const npcObjs = baseNPCs.map((npcData) => {
     const liveState = store.npcStates[npcData.id] ?? npcData.state;
     return spawnNPC(k, { ...npcData, state: liveState });
   });
+
+  function trySpawnLoomKeeper() {
+    if (!loomKeeperNPC) return;
+    if (npcObjs.some((n) => (n as unknown as { npcId: string }).npcId === "loom-keeper")) return;
+    const s = useGameStore.getState();
+    if (s.worldState.buildings["town-hall"]?.exists) {
+      const liveState = s.npcStates["loom-keeper"] ?? loomKeeperNPC.state;
+      npcObjs.push(spawnNPC(k, { ...loomKeeperNPC, state: liveState }));
+    }
+  }
+
+  // --- Fetch initial world state, then conditionally spawn loom-keeper ---
+  store.fetchWorldState().then(trySpawnLoomKeeper);
+  startQuestWatcher();
 
   // --- Camera (clamped to world bounds) ---
   const worldW = COLS * TILE;
@@ -421,16 +435,32 @@ export function worldScene(k: KAPLAYCtx) {
     k.setCamPos(cx, cy);
   });
 
+  // Spawn loom-keeper dynamically if town hall appears while scene is running
+  useGameStore.subscribe((state, prev) => {
+    const hadTownHall = prev.worldState.buildings["town-hall"]?.exists ?? false;
+    const hasTownHall = state.worldState.buildings["town-hall"]?.exists ?? false;
+    if (!hadTownHall && hasTownHall) trySpawnLoomKeeper();
+  });
+
+  // --- NPC Interaction ---
+  let dialogueCooldown = 0;
+  let pendingQuestActivation: string | null = null;
+
   // --- Unlock player when dialogue closes ---
   useGameStore.subscribe((state, prev) => {
     if (prev.isDialogueOpen && !state.isDialogueOpen) {
       setInteracting(false);
       dialogueCooldown = 0.6;
+      if (pendingQuestActivation) {
+        const qid = pendingQuestActivation;
+        pendingQuestActivation = null;
+        const cur = useGameStore.getState().questStates[qid];
+        if (cur !== "completed" && cur !== "active") {
+          useGameStore.getState().setQuestState(qid, "active");
+        }
+      }
     }
   });
-
-  // --- NPC Interaction ---
-  let dialogueCooldown = 0;
   k.onUpdate(() => {
     if (dialogueCooldown > 0) dialogueCooldown -= k.dt();
   });
@@ -442,6 +472,9 @@ export function worldScene(k: KAPLAYCtx) {
       currentStore.advanceDialogue();
       return;
     }
+
+    // Don't trigger NPC interaction while a full-screen overlay is open
+    if (currentStore.isLoomOpen || currentStore.isBookshelfOpen || currentStore.isHealing) return;
 
     // Prevent immediate re-open after dialogue closes
     if (dialogueCooldown > 0) return;
@@ -475,7 +508,12 @@ export function worldScene(k: KAPLAYCtx) {
     }
 
     // Loom-Keeper opens the Loom overlay directly (intro lines live inside the overlay).
+    // Once the player has forged a skill, Ysil is "done for the day" — no second skill.
     if (npcId === "loom-keeper") {
+      if (freshStore.lastForgedApprentice) {
+        freshStore.openDialogue(npcData.dialogue.fulfilled);
+        return;
+      }
       if (questId && runtimeQuestState !== "active") {
         freshStore.setQuestState(questId, "active");
       }
@@ -486,23 +524,28 @@ export function worldScene(k: KAPLAYCtx) {
     if (runtimeQuestState === "active") {
       freshStore.openDialogue(npcData.dialogue.reminder);
     } else {
-      if (questId) freshStore.setQuestState(questId, "active");
+      // Defer activating the quest until the player closes the dialogue,
+      // so the "new quest" bubble appears as a reveal after the conversation.
+      if (questId) pendingQuestActivation = questId;
       freshStore.openDialogue(npcData.dialogue.intro);
     }
   });
 
-  // --- Summon apprentice (F key) ---
+  // --- Run player skill (F key) — opens placement popup at a fixed village build plot ---
+  // Fixed plot: center-bottom of the square, below the dirt path, clear of pond/trees.
+  const BUILD_PLOT: [number, number] = [330, 360];
   k.onButtonPress("summon", () => {
     const s = useGameStore.getState();
     if (s.isDialogueOpen || s.isHealing || s.isLoomOpen || s.isBookshelfOpen || s.isEditorOpen) return;
     if (!s.lastForgedApprentice || !s.lastApprenticeArchetype) return;
-    const now = performance.now();
-    if (s.summonCooldownUntil > now) return;
-    if (s.activeSummon) return;
-    const effect = rollSummon(s.lastApprenticeArchetype);
-    if (!effect) return;
-    s.triggerSummon({ ...effect, startedAt: now });
-    s.setSummonCooldown(now + SUMMON_COOLDOWN_MS);
+    if (s.activeInvoke) return;
+    const ctx = buildInvokeContext({
+      skillName: s.lastForgedApprentice,
+      archetypeId: s.lastApprenticeArchetype,
+      position: BUILD_PLOT,
+    });
+    if (!ctx) return;
+    s.openInvoke({ ...ctx, phase: "ready", startedAt: performance.now() });
   });
 
   // --- Bookshelf toggle (K key) ---

@@ -58,9 +58,9 @@ export function menuScene(k: KAPLAYCtx) {
       label: "Begin New Journey",
       hint: "Wake in the valley with no memory of how you got here.",
       enabled: () => true,
-      activate: () => {
-        useGameStore.getState().resetGame();
+      activate: async () => {
         audio.playBlip("select");
+        await useGameStore.getState().resetGame();
         fadeOutAndGo("transition");
       },
     },
@@ -264,6 +264,7 @@ export function menuScene(k: KAPLAYCtx) {
         label: action.label,
         selected: isSelected,
         disabled: isDisabled,
+        index: i,
       });
     }
 
@@ -334,7 +335,7 @@ export function menuScene(k: KAPLAYCtx) {
       const row = settingsRows[i];
       const ry = rowStartY + i * rowH;
       const isSelected = i === settingsIndex;
-      drawSettingsRow(row, px + 24, ry, panelW - 48, isSelected);
+      drawSettingsRow(row, px + 24, ry, panelW - 48, isSelected, i);
     }
 
     setFooter("↑↓ choose   · ←→ adjust   · ENTER toggle   · ESC back");
@@ -422,8 +423,9 @@ export function menuScene(k: KAPLAYCtx) {
     label: string;
     selected: boolean;
     disabled: boolean;
+    index: number;
   }) {
-    const { x, y, w, h, label, selected, disabled } = opts;
+    const { x, y, w, h, label, selected, disabled, index } = opts;
 
     // Drop shadow
     k.add([
@@ -489,6 +491,34 @@ export function menuScene(k: KAPLAYCtx) {
         "menu-caret",
       ]);
     }
+
+    // Invisible click/hover hit area covering the button
+    const hit = k.add([
+      k.rect(w, h),
+      k.pos(x, y),
+      k.area(),
+      k.opacity(0),
+      k.z(14),
+      "menu-dynamic",
+    ]);
+    hit.onHover(() => {
+      if (mode !== "main" || fading !== "idle") return;
+      if (mainIndex === index) return;
+      mainIndex = index;
+      audio.playBlip("move");
+      render();
+    });
+    hit.onClick(() => {
+      if (mode !== "main" || fading !== "idle") return;
+      audio.resume();
+      audio.startMusic();
+      if (disabled) {
+        audio.playBlip("back");
+        return;
+      }
+      mainIndex = index;
+      mainActions[index].activate();
+    });
   }
 
   function drawSettingsRow(
@@ -497,6 +527,7 @@ export function menuScene(k: KAPLAYCtx) {
     y: number,
     w: number,
     selected: boolean,
+    index: number,
   ) {
     // Selection band
     if (selected) {
@@ -586,6 +617,53 @@ export function menuScene(k: KAPLAYCtx) {
         "menu-dynamic",
       ]);
     }
+
+    // Click/hover hit area for the row
+    const hit = k.add([
+      k.rect(w + 32, 36),
+      k.pos(x - 16, y - 4),
+      k.area(),
+      k.opacity(0),
+      k.z(15),
+      "menu-dynamic",
+    ]);
+    hit.onHover(() => {
+      if (mode !== "settings" || fading !== "idle") return;
+      if (settingsIndex === index) return;
+      settingsIndex = index;
+      audio.playBlip("move");
+      render();
+    });
+    hit.onClick(() => {
+      if (mode !== "settings" || fading !== "idle") return;
+      audio.resume();
+      audio.startMusic();
+      settingsIndex = index;
+      if (row.kind === "toggle") {
+        row.toggle();
+        audio.playBlip("select");
+        render();
+      } else if (row.kind === "action") {
+        row.activate();
+      } else if (row.kind === "slider") {
+        // Click position within the bar to set value
+        const segCount = 10;
+        const segGap = 4;
+        const barX = x + 110;
+        const barW = w - 190;
+        const segW = (barW - segGap * (segCount - 1)) / segCount;
+        // Use mouse pos in world coordinates
+        const mouseX = k.mousePos().x;
+        const localX = mouseX - barX;
+        if (localX >= 0 && localX <= barW) {
+          const fillFraction = localX / barW;
+          const stepped = Math.round(fillFraction * segCount) / segCount;
+          row.set(Math.max(0, Math.min(1, stepped)));
+          audio.playBlip("move");
+          render();
+        }
+      }
+    });
   }
 
   function setFooter(text: string) {
@@ -689,9 +767,12 @@ export function menuScene(k: KAPLAYCtx) {
   });
 
   // First mouse click anywhere also unlocks audio (browser autoplay policies).
+  // In credits mode, any click returns to main.
   k.onClick(() => {
     audio.resume();
     audio.startMusic();
+    if (fading !== "idle") return;
+    if (mode === "credits") goBackToMain();
   });
 
   // ── update: fade + caret pulse ───────────────────────────────

@@ -1,31 +1,62 @@
-import loreData from "../../data/apprentice/lore.json";
 import { getArchetype } from "./skill-serializer";
 
-export interface SummonEffect {
-  archetypeId: string;
-  label: string;   // e.g. "Whisper of Pages"
-  flavor: string;  // one-line payload (lore / crafted-thing / found-thing)
-  visual: "scroll" | "spark" | "sparkle";
+export interface PlacementIntent {
+  skillName: string;
+  kind: "house" | "farm" | "lantern";
+  position: [number, number];
+  buildingId: string;
 }
 
-const lore = loreData as unknown as Record<string, string[]>;
+export function makeBuildingId(kind: PlacementIntent["kind"]): string {
+  const stamp = Date.now().toString(36);
+  const rand = Math.floor(Math.random() * 1296).toString(36).padStart(2, "0");
+  return `player-${kind}-${stamp}${rand}`;
+}
 
-export const SUMMON_COOLDOWN_MS = 4500;
-export const SUMMON_DURATION_MS = 2600;
+export function buildCopyableCommand(skillName: string, kind: PlacementIntent["kind"]): string {
+  return `use the ${skillName} skill to place a ${kind} here`;
+}
 
-export function rollSummon(archetypeId: string): SummonEffect | null {
-  const archetype = getArchetype(archetypeId);
+export interface InvokeContext {
+  skillName: string;
+  archetypeId: string;
+  kind: PlacementIntent["kind"];
+  buildLabel: string;
+  position: [number, number];
+  buildingId: string;
+  command: string;
+}
+
+export function buildInvokeContext(args: {
+  skillName: string;
+  archetypeId: string;
+  position: [number, number];
+}): InvokeContext | null {
+  const archetype = getArchetype(args.archetypeId);
   if (!archetype) return null;
-  const pool = lore[archetypeId] ?? [];
-  const flavor = pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : "—";
-  const visual: SummonEffect["visual"] =
-    archetypeId === "chronicler" ? "scroll" :
-    archetypeId === "forgemaster" ? "spark" :
-    "sparkle";
+  const kind = archetype.buildKind;
+  const buildingId = makeBuildingId(kind);
   return {
-    archetypeId,
-    label: archetype.abilityLabel,
-    flavor,
-    visual,
+    skillName: args.skillName,
+    archetypeId: args.archetypeId,
+    kind,
+    buildLabel: archetype.abilityLabel,
+    position: args.position,
+    buildingId,
+    command: buildCopyableCommand(args.skillName, kind),
   };
+}
+
+export async function postPlacementIntent(intent: PlacementIntent): Promise<boolean> {
+  try {
+    const res = await fetch("/api/placement-intent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(intent),
+    });
+    return res.ok;
+  } catch (err) {
+    console.warn("Failed to post placement intent:", err);
+    return false;
+  }
 }

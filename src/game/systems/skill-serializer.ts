@@ -8,6 +8,7 @@ export interface Archetype {
   tagline: string;
   abilityLabel: string;
   abilityBlurb: string;
+  buildKind: "house" | "farm" | "lantern";
   clothColor: string;
   accentColor: string;
   glyph: string;
@@ -81,7 +82,7 @@ export function serializeApprentice(draft: LoomDraft): string {
   ].join("\n");
 
   const title = `# ${draft.name}`;
-  const tagline = `${archetype.tagline}\n\n> Woven at Ysil's loom.`;
+  const tagline = `${archetype.tagline}\n\n> Authored at Ysil's recipe table in the Claude Code RPG village.`;
 
   return [frontmatter, title, tagline, archetype.bodyTemplate].join("\n\n") + "\n";
 }
@@ -96,13 +97,13 @@ function yamlInline(value: string): string {
 }
 
 export function synthesizeCatchphrase(archetype: Archetype, name: string): string {
-  return `${archetype.label}. Call me ${name.replace(/-/g, " ")}.`;
+  return `${archetype.label} skill, saved as "${name}".`;
 }
 
 export function shapeBadgeColor(shape: VoiceRecipe["shape"]): { bg: string; fg: string; label: string } {
   switch (shape) {
-    case "sharp": return { bg: "#88D4B0", fg: "#1a3a24", label: "SHARP VOICE" };
-    case "wide": return { bg: "#FFB088", fg: "#3a1e0c", label: "WIDE VOICE" };
-    case "narrow": return { bg: "#C4A8D8", fg: "#2a1540", label: "NARROW VOICE" };
+    case "sharp": return { bg: "#88D4B0", fg: "#1a3a24", label: "JUST RIGHT" };
+    case "wide": return { bg: "#FFB088", fg: "#3a1e0c", label: "TOO BROAD" };
+    case "narrow": return { bg: "#C4A8D8", fg: "#2a1540", label: "TOO SPECIFIC" };
   }
 }

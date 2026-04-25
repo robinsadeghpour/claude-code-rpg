@@ -2,6 +2,8 @@ import { useGameStore } from "../../store/game-store";
 
 type QuestCheck = () => boolean;
 
+const RESERVED_BUILDINGS = new Set(["town-hall", "forge", "library"]);
+
 const checks: Record<string, QuestCheck> = {
   "town-hall-exists": () => {
     const { worldState } = useGameStore.getState();
@@ -15,10 +17,13 @@ const checks: Record<string, QuestCheck> = {
     const { worldState } = useGameStore.getState();
     return worldState.buildings["library"]?.exists ?? false;
   },
-  "apprentice-scroll-exists": () => {
-    const { lastForgedApprentice, skills } = useGameStore.getState();
-    if (!lastForgedApprentice) return false;
-    return skills.some((s) => s.name === lastForgedApprentice || s.path.includes(`/${lastForgedApprentice}/`));
+  "player-build-exists": () => {
+    const { worldState } = useGameStore.getState();
+    for (const [id, entry] of Object.entries(worldState.buildings)) {
+      if (RESERVED_BUILDINGS.has(id)) continue;
+      if (entry.exists) return true;
+    }
+    return false;
   },
 };
 

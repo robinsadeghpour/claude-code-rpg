@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useGameStore } from "../store/game-store";
 import { getActiveQuest } from "../game/systems/quest";
 
@@ -8,25 +7,22 @@ const AREA_NAMES: Record<string, string> = {
   library: "The Library",
 };
 
+const PIXEL = '"Press Start 2P", monospace';
+
 export function HUD() {
   const {
     currentArea,
     isDialogueOpen,
+    isHealing,
+    isLoomOpen,
+    isBookshelfOpen,
+    isEditorOpen,
     inWorld,
     questStates,
     lastForgedApprentice,
-    summonCooldownUntil,
+    activeInvoke,
+    hasUsedForgedSkill,
   } = useGameStore();
-  const [, setTick] = useState(0);
-
-  const now = typeof performance !== "undefined" ? performance.now() : Date.now();
-  const cooldownLeft = Math.max(0, summonCooldownUntil - now);
-
-  useEffect(() => {
-    if (cooldownLeft <= 0) return;
-    const id = setInterval(() => setTick((t) => t + 1), 200);
-    return () => clearInterval(id);
-  }, [cooldownLeft]);
 
   if (!inWorld) return null;
 
@@ -34,49 +30,85 @@ export function HUD() {
   const activeQuest = getActiveQuest();
   const activeState = activeQuest ? (questStates[activeQuest.id] ?? activeQuest.state) : null;
   const showHint = activeQuest && (activeState === "active" || activeState === "available");
-  const canSummon = !!lastForgedApprentice && cooldownLeft === 0;
+  const overlayOpen = isDialogueOpen || isHealing || isLoomOpen || isBookshelfOpen || isEditorOpen;
+  const showFBanner = !!lastForgedApprentice && !hasUsedForgedSkill && !overlayOpen && !activeInvoke;
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 16,
-        left: 16,
-        zIndex: 800,
-        fontFamily: '"Press Start 2P", monospace',
-        background: "rgba(0,0,0,0.5)",
-        padding: "10px 12px",
-        borderRadius: 5,
-        maxWidth: 260,
-      }}
-    >
-      <div style={{ color: "#FFF8E7", fontSize: 11, marginBottom: 6, textShadow: "1px 1px 0 #000" }}>
-        {areaName}
+    <>
+      <div
+        style={{
+          position: "fixed",
+          top: 16,
+          left: 16,
+          zIndex: 800,
+          fontFamily: PIXEL,
+          background: "rgba(0,0,0,0.5)",
+          padding: "10px 12px",
+          borderRadius: 5,
+          maxWidth: 260,
+        }}
+      >
+        <div style={{ color: "#FFF8E7", fontSize: 11, marginBottom: 6, textShadow: "1px 1px 0 #000" }}>
+          {areaName}
+        </div>
+        {showHint && (
+          <div style={{ color: "#FFE066", fontSize: 8, lineHeight: 1.5, marginBottom: 6, textShadow: "1px 1px 0 #000" }}>
+            {activeQuest.hudHints?.objective ?? activeQuest.title}
+          </div>
+        )}
+        {!isDialogueOpen && (
+          <div style={{ color: "#7A7A7A", fontSize: 9, textShadow: "1px 1px 0 #000" }}>
+            WASD to move · E to interact
+          </div>
+        )}
       </div>
-      {showHint && (
-        <div style={{ color: "#FFE066", fontSize: 8, lineHeight: 1.5, marginBottom: 6, textShadow: "1px 1px 0 #000" }}>
-          {activeQuest.hudHints?.objective ?? activeQuest.title}
-        </div>
-      )}
-      {!isDialogueOpen && (
-        <div style={{ color: "#7A7A7A", fontSize: 9, textShadow: "1px 1px 0 #000" }}>
-          WASD to move · E to interact
-        </div>
-      )}
-      {lastForgedApprentice && !isDialogueOpen && (
+
+      {showFBanner && (
         <div
           style={{
-            marginTop: 6,
-            color: canSummon ? "#88D4B0" : "#7A7A7A",
-            fontSize: 8,
-            textShadow: "1px 1px 0 #000",
+            position: "fixed",
+            top: 18,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 850,
+            fontFamily: PIXEL,
+            background: "linear-gradient(180deg, #FFE066 0%, #FFC93C 100%)",
+            color: "#1a1a2e",
+            padding: "12px 22px",
+            border: "3px solid #1a1a2e",
+            borderRadius: 6,
+            boxShadow: "0 6px 20px rgba(0,0,0,0.45)",
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+            animation: "fBannerPulse 1.4s ease-in-out infinite",
           }}
         >
-          {canSummon
-            ? `F · summon ${lastForgedApprentice}`
-            : `F · cooling… ${(cooldownLeft / 1000).toFixed(1)}s`}
+          <div
+            style={{
+              width: 36,
+              height: 36,
+              border: "3px solid #1a1a2e",
+              background: "#FFF8E7",
+              borderRadius: 6,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: 18,
+              boxShadow: "inset 0 -3px 0 rgba(0,0,0,0.25)",
+            }}
+          >
+            F
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <div style={{ fontSize: 11, lineHeight: 1.2 }}>Press F to place</div>
+            <div style={{ fontSize: 8, lineHeight: 1.2, color: "#3a2a0a" }}>
+              your skill: {lastForgedApprentice}
+            </div>
+          </div>
         </div>
       )}
-    </div>
+      <style>{`@keyframes fBannerPulse { 0%, 100% { transform: translate(-50%, 0) scale(1); } 50% { transform: translate(-50%, 2px) scale(1.02); } }`}</style>
+    </>
   );
 }

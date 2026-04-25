@@ -1,36 +1,36 @@
 {
   "id": "weave-an-apprentice",
-  "title": "Weave an Apprentice",
+  "title": "Write Your First Skill",
   "npcId": "loom-keeper",
   "areaId": "village-square",
   "state": "locked",
-  "description": "Ysil's loom hums when you stand near it. She offers to teach you how to weave an apprentice — a little helper that answers when you call.",
-  "checkId": "apprentice-scroll-exists",
+  "description": "Ysil will teach you to write your first Claude Code skill \u2014 a recipe Claude can run from your terminal to build something for the village.",
+  "checkId": "player-build-exists",
   "trigger": {
-    "type": "skill-exists",
-    "condition": ".claude/skills/<apprentice-name>/SKILL.md"
+    "type": "asset-exists",
+    "condition": "game-assets/buildings/<player-build>.png"
   },
   "hudHints": {
-    "objective": "Weave an Apprentice at Ysil's loom",
-    "instruction": "Find Ysil in the village square and step up to her loom.\nYou'll make five choices — cloth, name, voice, tools, recipe — and a real skill will walk off the loom into your .claude/skills/ folder.",
-    "detail": "This is the heart of skill authoring in Claude Code: a SKILL.md file with frontmatter (name, description, allowed-tools) and a markdown body. The Loom turns each choice into a field. At the end, the file is written to disk and the Apprentice is yours to summon from any conversation.",
-    "copyable": "Talk to Ysil at the loom in the village square"
+    "objective": "Write a skill at Ysil's recipe table, then use it to build something",
+    "instruction": "Talk to Ysil in the village square. Pick a buildable, name your skill, and choose when Claude should run it. After it's saved, press F anywhere in the village to use your skill.",
+    "detail": "Claude Code skills are markdown files in .claude/skills/<name>/SKILL.md with frontmatter (name, description, allowed-tools) and a body Claude follows. Your skill will read game-data/placement-intent.json (written when you press F), generate a sprite, and add an entry to game-data/buildings.json. The file watcher spawns it in the world.",
+    "copyable": "Talk to Ysil at her recipe table in the village square"
   },
   "healMoment": {
     "duration": 2500,
     "visual": "bloom",
     "audio": "chime",
     "npcReaction": [
-      { "speaker": "Ysil", "text": "There. The thread holds. Step back — let them stand on their own." }
+      { "speaker": "Ysil", "text": "Look at that. Your skill ran, the building landed, the village answered. That's the whole loop." }
     ],
-    "worldChange": "apprentice-woven"
+    "worldChange": "first-player-build"
   },
   "rewards": {
-    "worldChange": "apprentice-woven"
+    "worldChange": "first-player-build"
   },
   "_creatorNote": {
     "concept": "Authoring a Claude Code skill",
-    "lesson": "Skills are the player's most compound tool. This quest decomposes skill authoring into five choices — archetype, name, description, tools, body — and makes each one a character-creation decision. The trade-offs are made visible: tool budgets by archetype teach scope discipline, the description composer teaches that triggering is the hardest part, and the Summoning Arena gives immediate feedback via precision/recall.",
-    "realWorldParallel": "Creating a SKILL.md file in .claude/skills/<name>/ with well-chosen frontmatter and a body the agent can rely on."
+    "lesson": "Skills are recipes Claude can run from the terminal. The hardest part isn't what the skill does \u2014 it's the description that tells Claude when to run it. The recipe table makes that explicit (too broad / just right / too specific) and gives the player a real, reusable skill that lands a sprite in the world.",
+    "realWorldParallel": "Creating a SKILL.md with well-chosen frontmatter (especially the description) and a body that performs a concrete, scoped task."
   }
 }

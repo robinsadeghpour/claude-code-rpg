@@ -1,26 +1,26 @@
 {
-  "chronicler": [
-    "note-keeper",
-    "margin-seeker",
-    "ink-bearer",
-    "page-turner",
-    "quiet-eye",
-    "glossary-hand"
+  "house-builder": [
+    "cozy-cottage",
+    "oak-house",
+    "thatch-roof",
+    "warm-hearth",
+    "stone-cottage",
+    "river-house"
   ],
-  "forgemaster": [
-    "anvil-sparrow",
-    "rune-smith",
-    "lantern-wright",
-    "stone-shaper",
-    "kiln-keeper",
-    "hammer-moth"
+  "farm-maker": [
+    "oak-farm",
+    "small-plot",
+    "scarecrow-row",
+    "harvest-patch",
+    "carrot-field",
+    "morning-furrow"
   ],
-  "scout": [
-    "path-finder",
-    "hollow-walker",
-    "whisper-tracker",
-    "lantern-runner",
-    "thistle-eye",
-    "trail-fox"
+  "lantern-lighter": [
+    "lamp-light",
+    "warm-glow",
+    "path-lantern",
+    "evening-flame",
+    "yellow-lamp",
+    "porch-light"
   ]
 }

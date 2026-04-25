@@ -3,7 +3,7 @@
   "title": "Build the Town Hall",
   "npcId": "mayor-bramble",
   "areaId": "village-square",
-  "state": "available",
+  "state": "locked",
   "description": "The mayor needs a town hall — the village has no heart.",
   "checkId": "town-hall-exists",
   "trigger": {
@@ -11,10 +11,10 @@
     "condition": "game-assets/buildings/town-hall.png"
   },
   "hudHints": {
-    "objective": "Generate a town hall building for the village",
-    "instruction": "Open your terminal and tell Claude:\n\"use the building generator skill to create a town hall\"",
-    "detail": "Claude Code has skills — reusable recipes that generate things. The building-generator skill will create a town hall sprite and place it in game-assets/buildings/. Once the file appears, the village will react.",
-    "copyable": "use the building generator skill to create a town hall"
+    "objective": "Place the town hall in the village",
+    "instruction": "Open your terminal and tell Claude:\n\"use the place-town-hall skill\"",
+    "detail": "Claude Code has skills — reusable recipes that do small jobs. The place-town-hall skill copies the town hall sprite (already on disk) into place so the village can see it. No image generation, no API calls.",
+    "copyable": "use the place-town-hall skill"
   },
   "healMoment": {
     "duration": 2500,

@@ -1,32 +1,33 @@
 {
   "id": "loom-keeper",
   "name": "Ysil",
-  "role": "Loom-Keeper",
+  "role": "Skill-Keeper",
   "area": "village-square",
   "position": { "x": 620, "y": 300 },
   "state": "waiting",
-  "catchphrase": "Every thread shapes what walks off the loom.",
+  "catchphrase": "A skill is just a recipe Claude can run.",
   "personality": {
-    "trait": "Patient, weathered, a touch fae",
-    "speechPattern": "Quiet sentences about threads, cloth, and names",
-    "quirk": "Tugs absently at a silver thread wound around her wrist"
+    "trait": "Patient, weathered, plain-spoken",
+    "speechPattern": "Short, clear sentences. Calls things what they are.",
+    "quirk": "Keeps a folded sheet of skill recipes in her apron pocket"
   },
   "dialogue": {
     "intro": [
       { "speaker": "Ysil", "text": "You smell of fresh timber. You've been near the new town hall." },
-      { "speaker": "Ysil", "text": "I am Ysil. I keep the loom. It's been quiet here since the village lost its thread." },
-      { "speaker": "Ysil", "text": "Look — see how it hums when you stand close? It remembers how to make apprentices." },
-      { "speaker": "Ysil", "text": "Apprentices are little helpers woven from intent. You choose their cloth, their name, their voice, the tools they carry. Then they walk off the loom and answer when you call." },
-      { "speaker": "Ysil", "text": "Would you like to weave one? Choose slow. Names that fit too loose fray at the edges." }
+      { "speaker": "Ysil", "text": "I'm Ysil. I write skills here. Recipes I hand to Claude when I want help with something." },
+      { "speaker": "Ysil", "text": "A skill is just a markdown file Claude can run from your terminal. Three parts: what it does, what it's called, and when Claude should use it." },
+      { "speaker": "Ysil", "text": "Let's write one together. We'll make a skill that builds something useful for the village \u2014 a house, a farm, or a lantern \u2014 wherever you stand." },
+      { "speaker": "Ysil", "text": "Pick slow. The third part \u2014 when Claude should use it \u2014 is the one most people get wrong." }
     ],
     "reminder": [
-      { "speaker": "Ysil", "text": "The loom is still warm. Come back when you are ready to pick up the thread." },
-      { "speaker": "Ysil", "text": "No hurry. A hurried weave unravels by morning." }
+      { "speaker": "Ysil", "text": "The recipe sheet is still here when you want to come back to it." },
+      { "speaker": "Ysil", "text": "No hurry. Better a clear skill than a hasty one." }
     ],
     "fulfilled": [
-      { "speaker": "Ysil", "text": "I hear your apprentice moving about the village. That is a good weave." },
-      { "speaker": "Ysil", "text": "Press F anywhere out there and they'll come. Each kind answers their own way." },
-      { "speaker": "Ysil", "text": "Oh — they also left a scroll on your shelf. If you know where to look beyond the village, you may find it waiting for them out there too." }
+      { "speaker": "Ysil", "text": "One skill a day, that's my rule. We wrote yours \u2014 my work here is done." },
+      { "speaker": "Ysil", "text": "Press F anywhere out there to use it. You'll get a line to paste into Claude." },
+      { "speaker": "Ysil", "text": "The file lives in `.claude/skills/` if you ever want to read it or change it." },
+      { "speaker": "Ysil", "text": "Come back tomorrow if you'd like, but the recipe table is folded up for the day." }
     ]
   },
   "sprite": {
@@ -34,5 +35,5 @@
     "fulfilled": "npc-blacksmith-alt"
   },
   "questId": "weave-an-apprentice",
-  "_creatorNote": "Teaches skill authoring through a character-creation ritual. Interaction triggers the Loom creator UI, not a normal dialogue reminder. Intro plays once; completing the creator writes a real SKILL.md to .claude/skills/<name>/ and fires the heal moment."
+  "_creatorNote": "Teaches Claude Code skill authoring through a small, plain-spoken creator UI. The player picks a buildable (house/farm/lantern), names the skill, and tunes the trigger description. The final SKILL.md goes to .claude/skills/<name>/. Pressing F in the village opens a popup with a copyable command; pasting it in Claude Code invokes the player's skill, which writes a sprite + registry entry. The file watcher spawns the building in the running game."
 }

@@ -40,7 +40,7 @@ export function Station1Archetype() {
 
   return (
     <div>
-      <StationHeader number={1} title="PICK YOUR APPRENTICE" subtitle="what will they do for you?" />
+      <StationHeader number={1} title="WHAT DOES YOUR SKILL BUILD?" subtitle="pick what Claude will place when you press F" />
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {list.map((a) => {
           const selected = archetypeId === a.id;
@@ -78,8 +78,8 @@ export function Station1Archetype() {
                 <div style={{ fontSize: 12, marginBottom: 6 }}>{a.label.toUpperCase()}</div>
                 <div style={{ fontSize: 8, lineHeight: 1.5, opacity: 0.85, marginBottom: 6 }}>{a.tagline}</div>
                 <div style={{ fontSize: 7, lineHeight: 1.5, opacity: 0.75 }}>
-                  <span style={{ color: selected ? a.accentColor : palette.gold, fontWeight: "bold" }}>{a.abilityLabel}</span>
-                  {" \u2014 "}{a.abilityBlurb}
+                  <span style={{ color: selected ? a.accentColor : palette.gold, fontWeight: "bold" }}>How you use it:</span>
+                  {" "}{a.abilityBlurb}
                 </div>
               </div>
             </button>
@@ -106,7 +106,7 @@ export function Station2Name() {
 
   return (
     <div>
-      <StationHeader number={2} title="GIVE THEM A NAME" subtitle="what will you call them?" />
+      <StationHeader number={2} title="NAME YOUR SKILL" subtitle="this becomes the folder name in .claude/skills/" />
       <div style={{
         display: "grid",
         gridTemplateColumns: "repeat(2, 1fr)",
@@ -156,10 +156,10 @@ export function Station3Voice() {
 
   return (
     <div>
-      <StationHeader number={3} title="CHOOSE THEIR VOICE" subtitle="when should they answer?" />
+      <StationHeader number={3} title="WHEN SHOULD CLAUDE USE IT?" subtitle="this is the description field in your SKILL.md" />
 
       <div style={{ fontFamily: mono, fontSize: 8, color: palette.sage, lineHeight: 1.7, textAlign: "center", marginBottom: 12 }}>
-        Tap a voice. Watch which calls it answers.
+        Pick a description. Watch which prompts Claude would run it on.
       </div>
 
       {/* Sample prompts panel */}
@@ -172,8 +172,8 @@ export function Station3Voice() {
             correct ? palette.ok : palette.danger;
           const status =
             !selected ? "\u2014" :
-            fires ? "ANSWERED" :
-            "STAYED QUIET";
+            fires ? "CLAUDE RUNS IT" :
+            "CLAUDE SKIPS IT";
           const statusColor =
             !selected ? "#7A7A7A" :
             correct ? palette.ok : palette.danger;
@@ -192,7 +192,7 @@ export function Station3Voice() {
               }}
             >
               <span style={{ fontFamily: mono, fontSize: 6, color: p.isTarget ? palette.gold : palette.sage, minWidth: 70 }}>
-                {p.isTarget ? "A REAL CALL" : "NOT FOR YOU"}
+                {p.isTarget ? "FOR YOUR SKILL" : "NOT FOR YOUR SKILL"}
               </span>
               <span style={{ fontFamily: mono, fontSize: 9, color: palette.cream, flex: 1, lineHeight: 1.5 }}>
                 {p.text}

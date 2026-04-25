@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGameStore } from "../../store/game-store";
 import { useLoomStore } from "../../store/loom-store";
 import {
@@ -73,7 +73,7 @@ export function LoomOverlay() {
       });
       const ok = await saveSkill(loom.name, md);
       if (!ok) {
-        setSaveError("The loom refused. Check the server.");
+        setSaveError("Couldn't save the skill file. Check the server log.");
         setWeaving(false);
         return;
       }
@@ -157,9 +157,9 @@ export function LoomOverlay() {
 
 function LoomHeader({ stage, onClose }: { stage: string; onClose: () => void }) {
   const title =
-    stage === "intro" ? "YSIL'S LOOM" :
-    stage === "station" ? "WEAVE AN APPRENTICE" :
-    "THE APPRENTICE IS BOUND";
+    stage === "intro" ? "YSIL'S RECIPE TABLE" :
+    stage === "station" ? "WRITE A SKILL" :
+    "YOUR SKILL IS READY";
   return (
     <div
       style={{
@@ -205,7 +205,7 @@ function LoomFooter({
   onBack: () => void;
   onNext: () => void;
 }) {
-  const nextLabel = station < TOTAL_STATIONS ? "NEXT ▸" : weaving ? "WEAVING…" : "▸ WEAVE";
+  const nextLabel = station < TOTAL_STATIONS ? "NEXT ▸" : weaving ? "SAVING…" : "▸ SAVE SKILL";
   return (
     <div
       style={{
@@ -261,6 +261,25 @@ function IntroStage({ onBegin }: { onBegin: () => void }) {
   const [idx, setIdx] = useState(0);
   const isLast = idx >= introLines.length - 1;
   const line = introLines[idx];
+
+  const isLastRef = useRef(isLast);
+  const onBeginRef = useRef(onBegin);
+  isLastRef.current = isLast;
+  onBeginRef.current = onBegin;
+
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      const tag = (e.target as HTMLElement)?.tagName?.toLowerCase() ?? "";
+      if (tag === "input" || tag === "textarea" || tag === "button") return;
+      e.preventDefault();
+      if (!isLastRef.current) setIdx((i) => i + 1);
+      else onBeginRef.current();
+    }
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, []);
+
   return (
     <div style={{ padding: "20px 4px", minHeight: 260 }}>
       <div style={{ color: palette.gold, fontSize: 10, marginBottom: 16 }}>
@@ -298,7 +317,7 @@ function IntroStage({ onBegin }: { onBegin: () => void }) {
               cursor: "pointer",
             }}
           >
-            ▸ BEGIN WEAVING
+            ▸ START WRITING
           </button>
         )}
       </div>
@@ -319,7 +338,7 @@ function RevealStage({ onFinalize }: { onFinalize: () => void }) {
         {loom.name} — {archetype.label}
       </div>
       <div style={{ color: palette.cream, fontSize: 9, textAlign: "center", lineHeight: 1.7, maxWidth: 500 }}>
-        "{catchphrase}"
+        {catchphrase}
       </div>
       <ApprenticeCard
         name={loom.name}
@@ -329,9 +348,9 @@ function RevealStage({ onFinalize }: { onFinalize: () => void }) {
         catchphrase={catchphrase}
       />
       <div style={{ color: palette.sage, fontSize: 8, textAlign: "center", lineHeight: 1.7, maxWidth: 520, marginTop: 4 }}>
-        Press <span style={{ color: palette.gold }}>F</span> in the village to summon them.
+        Saved to <span style={{ color: palette.gold }}>.claude/skills/{loom.name}/SKILL.md</span>.
         <br />
-        They also left a scroll on your shelf — find them out there too, if you know where to look.
+        Walk into the village and press <span style={{ color: palette.gold }}>F</span> to use it.
       </div>
       <button
         onClick={onFinalize}
@@ -346,7 +365,7 @@ function RevealStage({ onFinalize }: { onFinalize: () => void }) {
           marginTop: 4,
         }}
       >
-        ▸ SEND THEM OFF
+        ▸ DONE
       </button>
     </div>
   );
